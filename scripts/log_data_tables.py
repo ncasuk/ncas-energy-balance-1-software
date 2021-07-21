@@ -34,9 +34,12 @@ def log(url):
     tables = ['Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation']
     date = datetime.now().strftime("%Y-%m-%d")
 
+    # get current directory
+    current_directory = os.getcwd()
+
     for table in tables:
 
-        csv_dirs = f"/home/pi/campbell_data/{table}"
+        csv_dirs = f"{current_directory}/{table}"
         csv_name = f"{table}_{date}.csv"
         csv_path = os.path.join(csv_dirs, csv_name)
 

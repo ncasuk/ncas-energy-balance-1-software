@@ -162,16 +162,28 @@
 <p>The scripts make use of the package PyCampbellCR1000 (on an updated fork) - this works for CR3000 loggers as well.
 The documentation for this package can be found here: <a class="reference external" href="https://pycampbellcr1000.readthedocs.io/en/latest/">https://pycampbellcr1000.readthedocs.io/en/latest/</a></p>
 <ol class="arabic simple">
-<li><p>logging:</p></li>
+<li><p>log_data_tables:</p></li>
 </ol>
 <ul class="simple">
 <li><p>Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file.</p></li>
 <li><p>The datalogger URL must be provided as a command line argument e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port</p></li>
 <li><p>Edit your local script on line 34 to change the tables that are downloaded.</p></li>
 </ul>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python logging.py serial:/dev/ttyUSB0:115200
+<p>To run once:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> scripts
+<span class="gp">$ </span>python log_data_tables.py serial:/dev/ttyUSB0:115200
 </pre></div>
 </div>
+<p>To set up a cron job:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>crontab -e
+</pre></div>
+</div>
+<p>Add a command, such as the one below, to this file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*/</span><span class="mi">5</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">.</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pi</span><span class="o">/</span><span class="n">ncas</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">balance</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">software</span><span class="o">/</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span> <span class="o">&amp;&amp;</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pi</span><span class="o">/</span><span class="n">ncas</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">balance</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">software</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">log_data_tables</span><span class="o">.</span><span class="n">py</span> <span class="n">serial</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">ttyUSB0</span><span class="p">:</span><span class="mi">115200</span> <span class="o">&gt;&gt;</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pi</span><span class="o">/</span><span class="n">campbell_data</span><span class="o">/</span><span class="n">cron</span><span class="o">.</span><span class="n">log</span> <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>This sets this script running every 5 minutes. The first file path needs to point to your virtual environment and the second to the location of the script.
+The final file path points to the location at which to write a log file. This can be excluded if this is not required.</p>
 </div>
 
 
