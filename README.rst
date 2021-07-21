@@ -3,7 +3,7 @@ Documentation can be found at https://ncas-energy-balance-1-software.readthedocs
 This repository contains scripts for logging data from an energy balance tower using python.
 This replaces the need to use Microsoft Windows software for acquiring the data.
 
-To see which scripts are available and what they do, go to https://ncas-energy-balance-1-software.readthedocs.io/en/latest/scripts.html.
+To see which scripts are available and what they do, go to `scripts`_.
 
 The scripts can be downloaded from the `Github repo`_.
 
@@ -34,3 +34,4 @@ usually works.
 
 
 .. _Github repo: https://github.com/ncasuk/ncas-energy-balance-1-software
+.. _scripts: https://ncas-energy-balance-1-software.readthedocs.io/en/latest/scripts.html

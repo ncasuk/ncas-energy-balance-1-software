@@ -15,4 +15,4 @@ The documentation for this package can be found here: https://pycampbellcr1000.r
 
 .. code-block:: console
 
-    $ python logging.py serial:/dev/ttyUSB0:115200
+    $ python scripts/logging.py serial:/dev/ttyUSB0:115200
