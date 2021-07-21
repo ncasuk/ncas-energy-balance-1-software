@@ -10,7 +10,7 @@ The documentation for this package can be found here: https://pycampbellcr1000.r
 1. log_data_tables:
 
 - Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file.
-- The files are made in your current directory, in a directory named after the table e.g. <current-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv
+- The files are made in your current directory, in a directory named after the table e.g. ``<current-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv``
 - The datalogger URL must be provided as a command line argument e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port
 - Edit your local script on line 34 to change the tables that are downloaded.
 
