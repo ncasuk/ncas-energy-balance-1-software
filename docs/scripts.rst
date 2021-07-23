@@ -7,7 +7,7 @@ Scripts
 The scripts make use of the package PyCampbellCR1000 (on an updated fork) - this works for CR3000 loggers as well.
 The documentation for this package can be found here: https://pycampbellcr1000.readthedocs.io/en/latest/
 
-1. download_data:
+**1. download_data:**
 
 - Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file.
 - The files are made in your current directory, in a directory named after the table e.g. ``<current-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv``
@@ -37,12 +37,12 @@ This sets this script running every 5 minutes. The first file path needs to poin
 The final file path points to the location at which to write a log file. This can be excluded if this is not required.
 
 
-2. download_data_by_date:
+**2. download_data_by_date:**
 
 - Intended to be used to bulk donwload data over a range of days. 
 - Useful if logger has been turned off/ was down etc.
 - This downloads data from tables on the logger and saves to a daily csv file.
-- The files are made in your current directory, in a directory named after the table e.g. <current-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv
+- The files are made in your current directory, in a directory named after the table e.g. ``<current-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv``
 - The datalogger URL must be provided as a command line argument e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port
 - The start and end dates of the days to download should be provided on the command line. A start date is required but an end date is not. If an end date is not provided, data is downloaded only for the day provided as the start date.
 - If a file for a day has partial data, this script will download the rest of the data for that day, following on from the latest entry in that file.
@@ -50,21 +50,22 @@ The final file path points to the location at which to write a log file. This ca
 
 To run:
 
+The below command will download data for 21/07/2021, 22/07/2021 and 23/07/2021 and create a csv file for each day.
+
 .. code-block:: console
     
     $ cd scripts
     $ python download_data_by_date.py serial:/dev/ttyUSB0:115200 -s 2021-07-21 -e 2021-07-23
 
-This command will download data for 21/07/2021, 22/07/2021 and 23/07/2021 and create a csv file for each day
+
+This next command will download data only for 21/07/2021.
 
 .. code-block:: console
     
     $ python download_data_by_date.py serial:/dev/ttyUSB0:115200 -s 2021-07-21
 
-This command will download data only for 21/07/2021.
 
-
-3. add_to_mysql:
+**3. add_to_mysql:**
 
 - This script will load the csv data for today's files, created by the `download_data` script, into my sql tables, providing the tables have already been created in the database.
 - This could be set up as cron job along with the `download_data` script, to keep the tables up to date.

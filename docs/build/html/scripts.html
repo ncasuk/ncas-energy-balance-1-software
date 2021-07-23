@@ -161,17 +161,16 @@
 <span id="id1"></span><h1>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h1>
 <p>The scripts make use of the package PyCampbellCR1000 (on an updated fork) - this works for CR3000 loggers as well.
 The documentation for this package can be found here: <a class="reference external" href="https://pycampbellcr1000.readthedocs.io/en/latest/">https://pycampbellcr1000.readthedocs.io/en/latest/</a></p>
-<ol class="arabic simple">
-<li><p>log_data_tables:</p></li>
-</ol>
+<p><strong>1. download_data:</strong></p>
 <ul class="simple">
 <li><p>Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file.</p></li>
+<li><p>The files are made in your current directory, in a directory named after the table e.g. <code class="docutils literal notranslate"><span class="pre">&lt;current-directory&gt;/SoilMoisture/SoilMoisture_2021-07-21.csv</span></code></p></li>
 <li><p>The datalogger URL must be provided as a command line argument e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port</p></li>
 <li><p>Edit your local script on line 34 to change the tables that are downloaded.</p></li>
 </ul>
 <p>To run once:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> scripts
-<span class="gp">$ </span>python log_data_tables.py serial:/dev/ttyUSB0:115200
+<span class="gp">$ </span>python download_data.py serial:/dev/ttyUSB0:115200
 </pre></div>
 </div>
 <p>To set up a cron job:</p>
@@ -179,11 +178,43 @@ The documentation for this package can be found here: <a class="reference extern
 </pre></div>
 </div>
 <p>Add a command, such as the one below, to this file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*/</span><span class="mi">5</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">.</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pi</span><span class="o">/</span><span class="n">ncas</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">balance</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">software</span><span class="o">/</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span> <span class="o">&amp;&amp;</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pi</span><span class="o">/</span><span class="n">ncas</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">balance</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">software</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">log_data_tables</span><span class="o">.</span><span class="n">py</span> <span class="n">serial</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">ttyUSB0</span><span class="p">:</span><span class="mi">115200</span> <span class="o">&gt;&gt;</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pi</span><span class="o">/</span><span class="n">campbell_data</span><span class="o">/</span><span class="n">cron</span><span class="o">.</span><span class="n">log</span> <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*/</span><span class="mi">5</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">.</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pi</span><span class="o">/</span><span class="n">ncas</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">balance</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">software</span><span class="o">/</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span> <span class="o">&amp;&amp;</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pi</span><span class="o">/</span><span class="n">ncas</span><span class="o">-</span><span class="n">energy</span><span class="o">-</span><span class="n">balance</span><span class="o">-</span><span class="mi">1</span><span class="o">-</span><span class="n">software</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span><span class="n">download_data</span><span class="o">.</span><span class="n">py</span> <span class="n">serial</span><span class="p">:</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">ttyUSB0</span><span class="p">:</span><span class="mi">115200</span> <span class="o">&gt;&gt;</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">pi</span><span class="o">/</span><span class="n">campbell_data</span><span class="o">/</span><span class="n">cron</span><span class="o">.</span><span class="n">log</span> <span class="mi">2</span><span class="o">&gt;&amp;</span><span class="mi">1</span>
 </pre></div>
 </div>
 <p>This sets this script running every 5 minutes. The first file path needs to point to your virtual environment and the second to the location of the script.
 The final file path points to the location at which to write a log file. This can be excluded if this is not required.</p>
+<p><strong>2. download_data_by_date:</strong></p>
+<ul class="simple">
+<li><p>Intended to be used to bulk donwload data over a range of days.</p></li>
+<li><p>Useful if logger has been turned off/ was down etc.</p></li>
+<li><p>This downloads data from tables on the logger and saves to a daily csv file.</p></li>
+<li><p>The files are made in your current directory, in a directory named after the table e.g. <code class="docutils literal notranslate"><span class="pre">&lt;current-directory&gt;/SoilMoisture/SoilMoisture_2021-07-21.csv</span></code></p></li>
+<li><p>The datalogger URL must be provided as a command line argument e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port</p></li>
+<li><p>The start and end dates of the days to download should be provided on the command line. A start date is required but an end date is not. If an end date is not provided, data is downloaded only for the day provided as the start date.</p></li>
+<li><p>If a file for a day has partial data, this script will download the rest of the data for that day, following on from the latest entry in that file.</p></li>
+<li><p>Edit your local script on line 42 to change the tables that are downloaded.</p></li>
+</ul>
+<p>To run:</p>
+<p>The below command will download data for 21/07/2021, 22/07/2021 and 23/07/2021 and create a csv file for each day.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> scripts
+<span class="gp">$ </span>python download_data_by_date.py serial:/dev/ttyUSB0:115200 -s <span class="m">2021</span>-07-21 -e <span class="m">2021</span>-07-23
+</pre></div>
+</div>
+<p>This next command will download data only for 21/07/2021.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python download_data_by_date.py serial:/dev/ttyUSB0:115200 -s <span class="m">2021</span>-07-21
+</pre></div>
+</div>
+<p><strong>3. add_to_mysql:</strong></p>
+<ul class="simple">
+<li><p>This script will load the csv data for today’s files, created by the <cite>download_data</cite> script, into my sql tables, providing the tables have already been created in the database.</p></li>
+<li><p>This could be set up as cron job along with the <cite>download_data</cite> script, to keep the tables up to date.</p></li>
+<li><p>Line 45 is a dictionary where the keys are the name of the tables from the logger and the values are the names of your tables in mysql. This should be changed as needed.</p></li>
+<li><p>The username, password and database name should be provided as command line arguments. See below:</p></li>
+</ul>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span> scripts
+<span class="gp">$ </span>python add_to_mysql.py -u &lt;username&gt; -p &lt;password&gt; -d &lt;database&gt;
+</pre></div>
+</div>
 </div>
 
 
