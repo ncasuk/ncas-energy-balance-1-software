@@ -5,8 +5,6 @@ __date__ = '15 Jul 2021'
 __contact__ = 'eleanor.smith@stfc.ac.uk'
 
 
-# To use install requirements.txt
-
 import argparse
 import os
 import subprocess
