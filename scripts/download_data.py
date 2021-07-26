@@ -21,10 +21,16 @@ def arg_parse():
                         "E.g. tcp:iphost:port or serial:/dev/ttyUSB0:19200:8N1"
                         " or serial:/COM1:19200:8N1")
 
+    parser.add_argument("-f",
+                        "--file-path",
+                        type=str,
+                        required=True,
+                        help="Path to directory in which to write the csv files.")
+
     return parser.parse_args()
 
 
-def log(url):
+def log(url, dir_path):
     device = CR1000.from_url(url)
 
     # device.list_tables():
@@ -32,12 +38,9 @@ def log(url):
     tables = ['Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation']
     date = datetime.now().strftime("%Y-%m-%d")
 
-    # get current directory
-    current_directory = os.getcwd()
-
     for table in tables:
 
-        csv_dirs = f"{current_directory}/{table}"
+        csv_dirs = os.path.join(dir_path, table)
         csv_name = f"{table}_{date}.csv"
         csv_path = os.path.join(csv_dirs, csv_name)
 
@@ -80,8 +83,9 @@ def get_todays_data(url, table, csv_path):
 def main():
     args = arg_parse()
     url = args.url
+    dir_path = args.file_path
 
-    log(url)
+    log(url, dir_path)
 
 if __name__ == '__main__':
     main()

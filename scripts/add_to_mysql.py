@@ -31,11 +31,17 @@ def arg_parse():
         required=True,
         help="Database name")
 
+    parser.add_argument("-f",
+        "--file-path",
+        type=str,
+        required=True,
+        help="Path of directory containing the csv files.")
+
     return parser.parse_args()
 
 
 
-def insert_into_tables(user, password, database):
+def insert_into_tables(user, password, database, dir_path):
     # Connect to server
     cnx = mysql.connector.connect(user=user, password=user, database=user, allow_local_infile=True)
 
@@ -46,7 +52,7 @@ def insert_into_tables(user, password, database):
     date = datetime.now().strftime("%Y-%m-%d")
 
     for table, name in tables.items():
-        datadir = f"/home/pi/campbell_data/{table}"
+        datadir = os.path.join(dir_path, table)
         latestfile = os.path.join(datadir, f"{table}_{date}.csv")
         tempfile = os.path.join(datadir, "temp.csv")
 
@@ -73,8 +79,9 @@ def main():
     user = args.user
     password = args.password
     database = args.database
+    dir_path = args.file_path
 
-    insert_into_tables(user, password, database)
+    insert_into_tables(user, password, database, dir_path)
 
 if __name__ == '__main__':
     main()

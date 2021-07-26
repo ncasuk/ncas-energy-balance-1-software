@@ -30,25 +30,28 @@ def arg_parse():
                         required=False,
                         help="The start date to extract data for")
 
+    parser.add_argument("-f",
+                        "--file-path",
+                        type=str,
+                        required=True,
+                        help="Path to directory in which to write the csv files.")
+
     return parser.parse_args()
 
 
-def get_data(url, start_date, end_date):
+def get_data(url, start_date, end_date, dir_path):
     device = CR1000.from_url(url)
 
     # device.list_tables():
     # ['Status', 'Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation', 'DataTableInfo', 'Public']
     tables = ['Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation']
 
-    # get current directory
-    current_directory = os.getcwd()
-
     for table in tables:
 
         while start_date <= end_date:
             end_of_day = start_date + timedelta(hours=23, minutes=59, seconds=59, microseconds=59)
 
-            csv_dirs = f"{current_directory}/{table}"
+            csv_dirs = os.path.join(dir_path, table)
             csv_name = f"{table}_{start_date.strftime('%Y-%m-%d')}.csv"
             csv_path = os.path.join(csv_dirs, csv_name)
 
@@ -91,6 +94,7 @@ def get_data_from_range(device, table, csv_path, start, end, header):
 def main():
     args = arg_parse()
     url = args.url
+    dir_path = args.file_path
     start_date = datetime.strptime(args.start_date, "%Y-%m-%d")
 
     # if no end date, make it the same as the start date, then data will be downloaded for one day only
@@ -99,7 +103,7 @@ def main():
     else:
         end_date = start_date
 
-    get_data(url, start_date, end_date)
+    get_data(url, start_date, end_date, dir_path)
 
 if __name__ == '__main__':
     main()
