@@ -42,6 +42,17 @@ def arg_parse():
 
 
 def insert_into_tables(user, password, database, dir_path):
+    """
+    Gets data from the csv files found in the specified directory path and inserts it into MySQL tables.
+    The MySQL tables must have been created proir to running this.
+    The default names used to map the logger tables to MySQL tables are:
+    {'Housekeeping': 'housekeeping', 'GPS_datetime': 'gps', 'SoilTemperature': 'soil_temp', 'SoilMoisture': 'soil_moisture', 'SoilHeatFlux': 'soil_heat_flux', 'Radiation': 'radiation'}
+    :param user: (str) The username for connecting to MySQL.
+    :param password: (str) The password for connecting to MySQL.
+    :param database: (str) The names of the database in which the tables exist.
+    :param dir_path: (str) The path to the top level directory in which the csv files and folders were created.
+    :returns: None
+    """
     # Connect to server
     cnx = mysql.connector.connect(user=user, password=user, database=user, allow_local_infile=True)
 

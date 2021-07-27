@@ -80,3 +80,7 @@ This next command will download data only for 21/07/2021.
     $ cd scripts
     $ python add_to_mysql.py -u <username> -p <password> -d <database> -f /home/campbell_data
 
+
+
+.. automodule:: scripts
+    :members:
