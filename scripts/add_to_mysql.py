@@ -47,6 +47,7 @@ def insert_into_tables(user, password, database, dir_path):
     The MySQL tables must have been created proir to running this.
     The default names used to map the logger tables to MySQL tables are:
     {'Housekeeping': 'housekeeping', 'GPS_datetime': 'gps', 'SoilTemperature': 'soil_temp', 'SoilMoisture': 'soil_moisture', 'SoilHeatFlux': 'soil_heat_flux', 'Radiation': 'radiation'}
+    
     :param user: (str) The username for connecting to MySQL.
     :param password: (str) The password for connecting to MySQL.
     :param database: (str) The names of the database in which the tables exist.
