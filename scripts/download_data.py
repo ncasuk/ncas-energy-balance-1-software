@@ -31,6 +31,14 @@ def arg_parse():
 
 
 def log(url, dir_path):
+    """
+    Extract the data from the campbell data logger for each specified table and save to a daily csv file.
+    This will backfill the file to get all data from the start of the day or update from the latest data entry if data already exists in the file.
+    Default tables are: Housekeeping, GPS_datetime, SoilTemperature, SoilMoisture, SoilHeatFlux and Radiation
+    :param url: (str) URL for connection with logger in format 'tcp:iphost:port' or 'serial:/dev/ttyUSB0:19200:8N1'
+    :param dir_path: (str) The path to the top level directory in which to create the csv files and folders.
+    :returns: None
+    """
     device = CR1000.from_url(url)
 
     # device.list_tables():
@@ -69,7 +77,14 @@ def log(url, dir_path):
 
 
 def get_todays_data(url, table, csv_path):
-    # check if there is any data - if not, get since start of day (get data is inclusive)
+    """
+    Gets all the data for the specified table from the start of the day i.e. 00:00
+    :param url: (str) URL for connection with logger in format 'tcp:iphost:port' or 'serial:/dev/ttyUSB0:19200:8N1'
+    :param table: (str) The name of the table on the logger from which the data is being extracted.
+    :param csv_path: (str) The path to the csv file to back fill with todays data.
+    :returns: None
+    """
+    # check if there is any data - if not, get since start of day (get data command is inclusive)
     # otherwise update command would just get all data
     # create a start time of midnight of todays date so update doesn't back-fill all data
     today = date.today()
