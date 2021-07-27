@@ -7,6 +7,8 @@ Scripts
 The scripts make use of the package PyCampbellCR1000 (on an updated fork) - this works for CR3000 loggers as well.
 The documentation for this package can be found here: https://pycampbellcr1000.readthedocs.io/en/latest/
 
+To see the API and source code, go to `scripts-api`_.
+
 **1. download_data:**
 
 - Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file.
@@ -81,6 +83,4 @@ This next command will download data only for 21/07/2021.
     $ python add_to_mysql.py -u <username> -p <password> -d <database> -f /home/campbell_data
 
 
-
-.. automodule:: scripts
-    :members:
+.. _scripts-api: https://ncas-energy-balance-1-software.readthedocs.io/en/latest/scripts-api.html

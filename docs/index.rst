@@ -12,6 +12,7 @@ Welcome to energy-balance-software's documentation!
 
    readme
    scripts
+   scripts-api
 
 
 
