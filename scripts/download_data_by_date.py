@@ -43,6 +43,7 @@ def get_data(url, start_date, end_date, dir_path):
     """
     Extract data from the campbell data logger for each specified table and save to a daily csv file between the date ranges specified.
     Default tables are: Housekeeping, GPS_datetime, SoilTemperature, SoilMoisture, SoilHeatFlux and Radiation
+    
     :param url: (str) URL for connection with logger in format 'tcp:iphost:port' or 'serial:/dev/ttyUSB0:19200:8N1'
     :param start_date: (datetime.datetime) The start date from which to collect data
     :param end_date: (datetime.datetime) The end date after which to stop collecting data. (the end date will be included in the data.) 
@@ -94,6 +95,7 @@ def get_data(url, start_date, end_date, dir_path):
 def get_data_from_range(device, table, csv_path, start, end, header):
     """ 
     Gets range of data specified by start and end dates and saves to csv at the path specified.
+
     :param device: (pycampbellcr1000.CR1000 object) URL for connection with logger in format 'tcp:iphost:port' or 'serial:/dev/ttyUSB0:19200:8N1'
     :param table: (str) The name of the table on the logger from which the data is being extracted.
     :param csv_path: (str) The path to the csv file to back fill with todays data.
