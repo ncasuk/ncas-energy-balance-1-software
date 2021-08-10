@@ -22,7 +22,7 @@ class QualityControl:
         self.frequency = frequency
         self.execute_qc()
 
-    def validate_date(self, input_date_format):
+    def prepare_date(self, input_date_format):
         
         if self.frequency == 'monthly' and 'd' in input_date_format:
             # remove day part from input date format

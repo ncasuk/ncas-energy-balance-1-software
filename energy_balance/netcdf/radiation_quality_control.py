@@ -22,7 +22,7 @@ class RadiationQualityControl(QualityControl):
     headers = [lwdn_header, lwup_header, swdn_header, swup_header, body_temp_header]
 
     def create_dataframes(self):
-        date = self.validate_date(CONFIG['radiation']['input_date_format'])
+        date = self.prepare_date(CONFIG['radiation']['input_date_format'])
         input_file_path = CONFIG['radiation']['input_file_path']
         
         radiation_file = CONFIG['radiation']['radiation_file']

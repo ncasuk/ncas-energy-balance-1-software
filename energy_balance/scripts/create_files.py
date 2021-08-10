@@ -44,11 +44,11 @@ def arg_parse():
 
 def create_soil_files(start_date, frequency):
     sqc = SoilQualityControl(start_date, frequency)
-    SoilNetCDF(sqc.df, sqc.qc, start_date)
+    SoilNetCDF(sqc.df, sqc.qc, start_date, frequency)
 
 def create_radiation_files(start_date, frequency):
     rqc = RadiationQualityControl(start_date, frequency)
-    RadiationNetCDF(rqc.df, rqc.qc, start_date)
+    RadiationNetCDF(rqc.df, rqc.qc, start_date, frequency)
 
 def get_create_file(data_product):
     if data_product == "radiation":

@@ -19,7 +19,7 @@ class SoilQualityControl(QualityControl):
     headers = soil_moisture_headers + soil_temperature_headers + soil_heat_flux_headers
 
     def create_dataframes(self):
-        date = self.validate_date(CONFIG['soil']['input_date_format'])
+        date = self.prepare_date(CONFIG['soil']['input_date_format'])
         input_file_path = CONFIG['soil']['input_file_path']
         
         soil_moisture_file = CONFIG['soil']['soil_moisture_file']
@@ -44,7 +44,7 @@ class SoilQualityControl(QualityControl):
         # soil temperature
         for col in self.soil_temperature_headers:
             temp_conditions = [np.isnan(self._df[col]), self._df[col] < -35, self._df[col] > 50, self._df[col] < 18, self._df[col] > 25]
-            temp_choices = [2, 2, 2, 2, 3]
+            temp_choices = [2, 2, 2, 3, 3]
             self.apply_qc(temp_conditions, temp_choices, col)
 
         # soil heat flux
