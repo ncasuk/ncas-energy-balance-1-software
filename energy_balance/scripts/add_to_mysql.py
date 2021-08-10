@@ -61,7 +61,7 @@ def insert_into_tables(user, password, database, dir_path):
     cur = cnx.cursor()
 
     tables = {'Housekeeping': 'housekeeping', 'GPS_datetime': 'gps', 'SoilTemperature': 'soil_temp', 'SoilMoisture': 'soil_moisture', 'SoilHeatFlux': 'soil_heat_flux', 'Radiation': 'radiation'}
-    date = datetime.now().strftime("%Y-%m-%d")
+    date = datetime.utcnow().strftime("%Y-%m-%d")
 
     for table, name in tables.items():
         datadir = os.path.join(dir_path, table)

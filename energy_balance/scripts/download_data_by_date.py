@@ -28,7 +28,7 @@ def arg_parse():
     parser.add_argument('-e', '--end-date',
                         type=str,
                         required=False,
-                        help="The start date to extract data for")
+                        help="The end date to extract data for")
 
     parser.add_argument("-f",
                         "--file-path",

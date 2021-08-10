@@ -12,13 +12,13 @@ The scripts can be downloaded from the `Github repo`_.
     $ git clone https://github.com/ncasuk/ncas-energy-balance-1-software.git
     $ cd ncas-energy-balance-1-software
 
-In order to use the scripts, create a virtual environment and install the requirements:
+In order to use the scripts, create a virtual environment and install the package:
 
 .. code-block:: console
 
     $ python -m venv venv
     $ source venv/bin/activate
-    $ pip install -r requirements.txt
+    $ pip install -e .
 
 
 Sometimes there can be a problem installing numpy on Raspberry Pi. The troubleshooting page for this is: https://numpy.org/devdocs/user/troubleshooting-importerror.html

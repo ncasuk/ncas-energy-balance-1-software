@@ -45,7 +45,7 @@ def log(url, dir_path):
     # device.list_tables():
     # ['Status', 'Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation', 'DataTableInfo', 'Public']
     tables = ['Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation']
-    date = datetime.now().strftime("%Y-%m-%d")
+    date = datetime.utcnow().strftime("%Y-%m-%d")
 
     for table in tables:
 
@@ -89,7 +89,7 @@ def get_todays_data(url, table, csv_path):
     # check if there is any data - if not, get since start of day (get data command is inclusive)
     # otherwise update command would just get all data
     # create a start time of midnight of todays date so update doesn't back-fill all data
-    today = date.today()
+    today = datetime.datetime.utcnow().date()
     midnight = datetime.combine(today, datetime.min.time())
     start_time = midnight.strftime("%Y-%m-%d %H:%M")
 

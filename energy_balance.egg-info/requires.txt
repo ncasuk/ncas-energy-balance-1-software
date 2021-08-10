@@ -1,0 +1,5 @@
+numpy
+pandas
+pycampbellcr1000@ git+https://github.com/ellesmith88/PyCampbellCR1000.git@master#egg=PyCampbellCR1000
+mysql-connector-python
+netCDF4
