@@ -14,6 +14,7 @@ class SoilNetCDF(BaseNetCDF):
     soil_heat_flux_headers = CONFIG['soil']['soil_heat_flux_headers']
     headers = soil_moisture_headers + soil_temperature_headers + soil_heat_flux_headers
     data_product = 'soil'
+    index_length = CONFIG['soil']['index_length']
 
     @staticmethod
     def convert_temps_to_kelvin(temps):
@@ -24,18 +25,21 @@ class SoilNetCDF(BaseNetCDF):
 
     def create_specific_dimensions(self):
         # create index dimension of length 3
-        self.dataset.createDimension("index", CONFIG['soil']['index_length'])
+        self.dataset.createDimension("index", self.index_length)
 
-    def create_variable(self, var_name, data_type, dims, values, headers, **kwargs):
+    def create_variable(self, var_name, data_type, dims, headers, **kwargs):
         # Create variable
         var = self.dataset.createVariable(var_name, data_type, dims, fill_value=-1e+20)
-        
+
+        # get the values
+        values = np.transpose(np.array([self.df[headers[n]] for n in range(self.index_length)]))
+
         # convert any nan values to fill values
         values[np.isnan(values)] = self.fill_value
         var[:] = values
 
         # mask the data according to the qc
-        var_masked = np.transpose(np.array([self.df_masked[headers[0]].astype(data_type), self.df_masked[headers[1]].astype(data_type), self.df_masked[headers[2]].astype(data_type)]))
+        var_masked = np.transpose(np.array([self.df_masked[headers[n]].astype(data_type) for n in range(self.index_length)]))
         
         # Set variable attributes
         var.valid_min = np.nanmin(var_masked) # get from valid values
@@ -49,8 +53,7 @@ class SoilNetCDF(BaseNetCDF):
         for col in self.soil_temperature_headers:
             self.df[col] = self.convert_temps_to_kelvin(self.df[col])
 
-        values = np.transpose(np.array([self.df[self.soil_temperature_headers[0]], self.df[self.soil_temperature_headers[1]], self.df[self.soil_temperature_headers[2]]]))
-
+        # convert the masked values to kelvin    
         for col in self.soil_temperature_headers:
             self.df_masked[col] = self.convert_temps_to_kelvin(self.df_masked[col])
 
@@ -60,24 +63,18 @@ class SoilNetCDF(BaseNetCDF):
                  "standard_name": "soil_temperature",
                  "coordinates": "latitude longitude"}
 
-        self.create_variable("soil_temperature", np.float32, ("time","index"), values, self.soil_temperature_headers, **attrs)
+        self.create_variable("soil_temperature", np.float32, ("time","index"), self.soil_temperature_headers, **attrs)
 
     def create_soil_moisture_variable(self):
-        # Create the soil water potential variable
-        values = np.transpose(np.array([self.df[self.soil_moisture_headers[0]], self.df[self.soil_moisture_headers[1]], self.df[self.soil_moisture_headers[2]]]))
-
         # Set water potential variable attributes
         attrs = {"cell_methods": "time:mean",
                  "long_name": "Soil Water Potential",
                  "units": "kPa",
                  "coordinates": "latitude longitude"}
 
-        self.create_variable("soil_water_potential", np.float32, ("time","index"), values, self.soil_moisture_headers, **attrs)
+        self.create_variable("soil_water_potential", np.float32, ("time","index"), self.soil_moisture_headers, **attrs)
 
     def create_soil_heat_flux_variable(self):
-        # Create the soil heat flux variable
-        values = np.transpose(np.array([self.df[self.soil_heat_flux_headers[0]], self.df[self.soil_heat_flux_headers[1]], self.df[self.soil_heat_flux_headers[2]]]))
- 
         # Set soil heat flux variable attributes
         attrs = {"cell_methods": "time:mean",
                  "long_name": "Downward Heat Flux in Soil",
@@ -85,12 +82,12 @@ class SoilNetCDF(BaseNetCDF):
                  "units": "W m-2",
                  "coordinates": "latitude longitude"}
 
-        self.create_variable("downward_heat_flux_in_soil", np.float32, ("time","index"), values, self.soil_heat_flux_headers, **attrs)
+        self.create_variable("downward_heat_flux_in_soil", np.float32, ("time","index"), self.soil_heat_flux_headers, **attrs)
 
     def create_qc_variable(self, name, headers, **kwargs):
         var = self.dataset.createVariable(name, np.byte, ("time","index"))
         qc_headers = [h + '_qc' for h in headers]
-        var[:] = np.transpose(np.array([self.qc[qc_headers[0]], self.qc[qc_headers[1]], self.qc[qc_headers[2]]]))
+        var[:] = np.transpose(np.array([self.qc[qc_headers[n]] for n in range(self.index_length)]))
         var.units = "1"
         for k, v in kwargs.items():
             setattr(var, k, v)

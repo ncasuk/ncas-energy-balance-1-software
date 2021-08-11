@@ -42,8 +42,10 @@ class SoilQualityControl(QualityControl):
 
     def qc_variables(self):
         # soil temperature
+        max_temp = CONFIG['soil']['max_expected_temp']
+        min_temp = CONFIG['soil']['min_expected_temp']
         for col in self.soil_temperature_headers:
-            temp_conditions = [np.isnan(self._df[col]), self._df[col] < -35, self._df[col] > 50, self._df[col] < 18, self._df[col] > 25]
+            temp_conditions = [np.isnan(self._df[col]), self._df[col] < -35, self._df[col] > 50, self._df[col] < min_temp, self._df[col] > max_temp]
             temp_choices = [2, 2, 2, 3, 3]
             self.apply_qc(temp_conditions, temp_choices, col)
 
