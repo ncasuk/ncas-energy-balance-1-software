@@ -47,11 +47,11 @@ class SoilQualityControl(QualityControl):
             temp_choices = [2, 2, 2, 3, 3]
             self.apply_qc(temp_conditions, temp_choices, col)
 
-        # soil heat flux
-        for col in self.soil_heat_flux_headers:
-            shf_conditions = [np.isnan(self._df[col]), self._df[col] < -30, self._df[col] > 70]
-            shf_choices = [2, 2, 2]
-            self.apply_qc(shf_conditions, shf_choices, col)
+        # soil heat flux, depends on temperature
+        for col_shf, col_temp in zip(self.soil_heat_flux_headers, self.soil_temperature_headers):
+            shf_conditions = [np.isnan(self._df[col_shf]), np.isnan(self._df[col_temp]), self._df[col_temp] < -30, self._df[col_temp] > 70]
+            shf_choices = [2, 2, 2, 2]
+            self.apply_qc(shf_conditions, shf_choices, col_shf)
 
         # soil water potential
         for col in self.soil_moisture_headers:

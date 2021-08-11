@@ -16,6 +16,7 @@ class BaseNetCDF:
     headers = 'UNDEFINED'
     data_product = "UNDEFINED"
     qc_flag_level = CONFIG['common']['qc_flag_level']
+    fill_value = CONFIG['common']['fill_value']
 
     def __init__(self, df, qc, date, frequency):
         self.df = df
@@ -68,12 +69,12 @@ class BaseNetCDF:
         return datetimes
 
     def get_masked_data(self, mask_value):
-        mask = (self.qc <= mask_value)
+        self.mask = (self.qc <= mask_value)
         self.df_masked = pd.DataFrame(columns = self.headers)
         self.df_masked[self.dt_header] = self.df[self.dt_header]
 
         for col in self.headers:
-            mask_column = mask[col+'_qc']
+            mask_column = self.mask[col+'_qc']
             self.df_masked[col] = self.df[col][mask_column]
 
     def create_time_variable(self):
@@ -107,7 +108,11 @@ class BaseNetCDF:
 
     def create_variable(self, var_name, data_type, dims, header, **kwargs):
         # Create variable
-        var = self.dataset.createVariable(var_name, data_type, dims, fill_value=-1e+20)
+        var = self.dataset.createVariable(var_name, data_type, dims, fill_value=self.fill_value)
+
+        # convert any nan values to fill values
+        self.df[header][np.isnan(self.df[header])] = self.fill_value
+
         var[:] = self.df[header]
 
         # mask the data according to the qc

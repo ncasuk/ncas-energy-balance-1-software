@@ -22,6 +22,17 @@ class RadiationNetCDF(BaseNetCDF):
         # no extra dimensions to create
         pass
 
+    def apply_cleaning_and_temp_masks(self):
+        # apply cleaning mask to all variables
+        for col in self.headers:
+            mask_column = self.mask['cleaning_qc']
+            self.df_masked[col] = self.df[col][mask_column]
+
+        # apply temp mask to all variables
+        for col in self.headers:
+            mask_column = self.mask[self.body_temp_header+'_qc']
+            self.df_masked[col] = self.df[col][mask_column]
+
     def create_radiation_variables(self):
         # set common parameters
         dims = ('time',)
@@ -53,6 +64,7 @@ class RadiationNetCDF(BaseNetCDF):
 
     def create_specific_variables(self):
         # create variables
+        self.apply_cleaning_and_temp_masks()
         self.create_radiation_variables()
 
         # create body temperature variable
@@ -65,36 +77,36 @@ class RadiationNetCDF(BaseNetCDF):
         # create qc variables
         # swdn
         attrs = {"long_name": "Data Quality flag: dwonwelling shortwave",
-                 "flag_values": "0b, 1b, 2b, 3b, 4b, 5b, 6b",
+                 "flag_values": "0b,1b,2b,3b,4b,5b,6b",
                  "flag_meanings": "0: not_used \n1: good data \n2: no_data \n3: bad_data_sw_radiation_<_0 \n4: bad_data_sw_radiation_>_2000_W_m-2 \n5: suspect_data \n6: timestamp_error"}
         self.create_qc_variable("qc_flag_downwelling_shortwave", self.swdn_header, ('time',), **attrs)
 
         # swup
         attrs = {"long_name": "Data Quality flag: upwelling shortwave",
-                 "flag_values": "0b, 1b, 2b, 3b, 4b, 5b, 6b",
+                 "flag_values": "0b,1b,2b,3b,4b,5b,6b",
                  "flag_meanings": "0: not_used \n1: good data \n2: no_data \n3: bad_data_sw_radiation_<_0 \n4: bad_data_sw_radiation_>_2000_W_m-2 \n5: suspect_data \n6: timestamp_error"}
         self.create_qc_variable("qc_flag_upwelling_shortwave", self.swup_header, ('time',), **attrs)
         
         # lwdn
         attrs = {"long_name": "Data Quality flag: downwelling longwave",
-                 "flag_values": "0b, 1b, 2b, 3b, 4b, 5b, 6b",
+                 "flag_values": "0b,1b,2b,3b,4b,5b,6b",
                  "flag_meanings": "0: not_used \n1: good data \n2: no_data \n3: bad_data_lw_radiation_<_0 \n4: bad_data_lw_radiation_>_1000_W_m-2 \n5: suspect_data \n6: timestamp_error"}
         self.create_qc_variable("qc_flag_downwelling_longwave", self.lwdn_header, ('time',), **attrs)
 
         # lwup
         attrs = {"long_name": "Data Quality flag: upwelling longwave",
-                 "flag_values": "0b, 1b, 2b, 3b, 4b, 5b, 6b",
-                 "flag_meanings": "0: not_used \n1: good data \n2: no_data \n3: bad_data_sw_radiation_<_0 \n4: bad_data_lw_radiation_>_1000_W_m-2 \n5: suspect_data \n6: timestamp_error"}
+                 "flag_values": "0b,1b,2b,3b,4b,5b,6b",
+                 "flag_meanings": "0: not_used \n1: good data \n2: no_data \n3: bad_data_lw_radiation_<_0 \n4: bad_data_lw_radiation_>_1000_W_m-2 \n5: suspect_data \n6: timestamp_error"}
         self.create_qc_variable("qc_flag_upwelling_longwave", self.lwup_header, ('time',), **attrs)
 
         # body temp
         attrs = {"long_name": "Data Quality flag: Body Temperature",
-                 "flag_values": "0b, 1b, 2b, 3b, 4b",
+                 "flag_values": "0b,1b,2b,3b,4b",
                  "flag_meanings": "0: not_used \n1: good data \n2: bad_data_body_temperature_outside_operational_range_-40_to_80C \n3: suspect_data \n4: timestamp_error"}
         self.create_qc_variable("qc_flag_body_temperature", self.body_temp_header, ('time',), **attrs)
 
         # cleaning
         attrs = {"long_name": "Data Quality flag: sensor cleaning",
-                 "flag_values": "0b, 1b, 2b, 3b, 4b",
+                 "flag_values": "0b,1b,2b,3b,4b",
                  "flag_meanings": "0: not_used \n1: good data \n2: bad_data_sensor_being_cleaned \n3: suspect_data \n4: timestamp_error"}
         self.create_qc_variable("qc_flag_cleaning", "cleaning", ('time',), **attrs)

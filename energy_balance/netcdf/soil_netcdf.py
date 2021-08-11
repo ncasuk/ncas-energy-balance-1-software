@@ -29,10 +29,13 @@ class SoilNetCDF(BaseNetCDF):
     def create_variable(self, var_name, data_type, dims, values, headers, **kwargs):
         # Create variable
         var = self.dataset.createVariable(var_name, data_type, dims, fill_value=-1e+20)
+        
+        # convert any nan values to fill values
+        values[np.isnan(values)] = self.fill_value
         var[:] = values
 
         # mask the data according to the qc
-        var_masked = np.transpose(np.array([self.df_masked[headers[0]], self.df_masked[headers[1]], self.df_masked[headers[2]]]))
+        var_masked = np.transpose(np.array([self.df_masked[headers[0]].astype(data_type), self.df_masked[headers[1]].astype(data_type), self.df_masked[headers[2]].astype(data_type)]))
         
         # Set variable attributes
         var.valid_min = np.nanmin(var_masked) # get from valid values
@@ -43,10 +46,13 @@ class SoilNetCDF(BaseNetCDF):
 
     def create_soil_temp_variable(self):
         # Create the soil temp variable - convert to kelvin
-        temps_1 = self.convert_temps_to_kelvin(self.df[self.soil_temperature_headers[0]])
-        temps_2 = self.convert_temps_to_kelvin(self.df[self.soil_temperature_headers[1]])
-        temps_3 = self.convert_temps_to_kelvin(self.df[self.soil_temperature_headers[2]])
-        values = np.transpose(np.array([temps_1, temps_2, temps_3]))
+        for col in self.soil_temperature_headers:
+            self.df[col] = self.convert_temps_to_kelvin(self.df[col])
+
+        values = np.transpose(np.array([self.df[self.soil_temperature_headers[0]], self.df[self.soil_temperature_headers[1]], self.df[self.soil_temperature_headers[2]]]))
+
+        for col in self.soil_temperature_headers:
+            self.df_masked[col] = self.convert_temps_to_kelvin(self.df_masked[col])
 
         attrs = {"cell_methods": "time:mean",
                  "long_name": "Soil Temperature",
@@ -98,18 +104,18 @@ class SoilNetCDF(BaseNetCDF):
         # create qc variables
         # qc soil heat flux
         attrs = {"long_name": "Data Quality flag: Soil Heat Flux",
-                 "flag_values": "0b, 1b, 2b, 3b, 4b",
+                 "flag_values": "0b,1b,2b,3b,4b",
                  "flag_meanings": "0: not_used \n1: good data \n2: bad_data_value_outside_operational_range_-30C_to_70C \n3: suspect_data \n4: timestamp_error"}
         self.create_qc_variable("qc_flag_soil_heat_flux", self.soil_heat_flux_headers, **attrs)
         
         # qc soil temp
         attrs = {"long_name": "Data Quality flag: Soil Temperature",
-                 "flag_values": "0b, 1b, 2b, 3b, 4b",
+                 "flag_values": "0b,1b,2b,3b,4b",
                  "flag_meanings": "0: not_used \n1: good data \n2: bad_data_outside_operational_range_-35C_to_50C \n3: suspect_data \n4: timestamp_error"}
         self.create_qc_variable("qc_flag_soil_temperature", self.soil_temperature_headers, **attrs)
         
         # qc soil water potential 
         attrs = {"long_name": "Data Quality flag: Soil Water Potential",
-                 "flag_values": "0b, 1b, 2b, 3b, 4b, 5b",
+                 "flag_values": "0b,1b,2b,3b,4b,5b",
                  "flag_meanings": "0: not_used \n1: good data \n2: bad_data_soil_water_potential_>_80kPa_contact_between_soil_and_sensor_usually_lost \n3: bad_data_value_outside_operational_range_0_to_200_kPa \n4: suspect_data \n5: timestamp_error"}
         self.create_qc_variable("qc_flag_soil_water_potential", self.soil_moisture_headers, **attrs)
