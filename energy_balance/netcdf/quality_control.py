@@ -4,7 +4,6 @@ __contact__ = 'eleanor.smith@stfc.ac.uk'
 
 import pandas as pd
 import numpy as np
-import xarray as xr
 import os
 from datetime import datetime
 from energy_balance import CONFIG
