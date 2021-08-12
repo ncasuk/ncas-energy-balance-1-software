@@ -5,4 +5,4 @@ pycampbellcr1000 @ git+https://github.com/ellesmith88/PyCampbellCR1000.git@maste
 mysql-connector-python
 netCDF4
 matplotlib
-dateutil
+python-dateutil 
