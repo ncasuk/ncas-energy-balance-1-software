@@ -9,6 +9,7 @@ from datetime import datetime
 import mysql.connector
 import argparse
 import subprocess
+from energy_balance import CONFIG
 
 def arg_parse():
     parser = argparse.ArgumentParser()
@@ -60,7 +61,9 @@ def insert_into_tables(user, password, database, dir_path):
     # Get a cursor
     cur = cnx.cursor()
 
-    tables = {'Housekeeping': 'housekeeping', 'GPS_datetime': 'gps', 'SoilTemperature': 'soil_temp', 'SoilMoisture': 'soil_moisture', 'SoilHeatFlux': 'soil_heat_flux', 'Radiation': 'radiation'}
+    logger_tables = CONFIG['common']['logger_tables']
+    mysql_tables = CONFIG['common']['mysql_tables']
+    tables = dict(zip(logger_tables, mysql_tables))
     date = datetime.utcnow().strftime("%Y-%m-%d")
 
     for table, name in tables.items():

@@ -10,6 +10,7 @@ import os
 import pandas as pd
 from datetime import datetime, timedelta
 from pycampbellcr1000 import CR1000
+from energy_balance import CONFIG
 
 
 def arg_parse():
@@ -54,7 +55,7 @@ def get_data(url, start_date, end_date, dir_path):
 
     # device.list_tables():
     # ['Status', 'Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation', 'DataTableInfo', 'Public']
-    tables = ['Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation']
+    tables = CONFIG['common']['logger_tables']
 
     for table in tables:
 

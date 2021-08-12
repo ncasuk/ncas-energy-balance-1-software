@@ -24,7 +24,7 @@ def _gather_config_files(package=None):
     else:
         conf_files.append(default_config)
 
-    # add system config /etc/roocs.ini
+    # add system config /config.ini
     sys_config = os.path.abspath(os.path.join(os.sep, "config.ini"))
     if os.path.isfile(sys_config):
         conf_files.append(sys_config)

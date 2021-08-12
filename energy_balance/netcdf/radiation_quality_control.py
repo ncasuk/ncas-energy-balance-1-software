@@ -76,3 +76,18 @@ class RadiationQualityControl(QualityControl):
         # cleaning_conditions = [self._df[self._df[self.dt_header].dt.time < cleaning_time_upper]]
         cleaning_choices = [2]
         self.apply_qc(cleaning_conditions, cleaning_choices, 'cleaning')
+
+    def apply_cleaning_and_temp_masks(self):
+        # apply cleaning mask to all variables
+        for col in self.headers:
+            mask_column = self.mask['cleaning_qc']
+            self._df_masked[col] = self._df_masked[col][mask_column]
+
+        # apply temp mask to all variables
+        for col in self.headers:
+            mask_column = self.mask[self.body_temp_header+'_qc']
+            self._df_masked[col] = self._df_masked[col][mask_column]
+
+    def create_masked_df(self, qc_flag):
+        super().create_masked_df(qc_flag)
+        self.apply_cleaning_and_temp_masks()

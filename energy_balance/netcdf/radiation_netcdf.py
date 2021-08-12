@@ -22,17 +22,6 @@ class RadiationNetCDF(BaseNetCDF):
         # no extra dimensions to create
         pass
 
-    def apply_cleaning_and_temp_masks(self):
-        # apply cleaning mask to all variables
-        for col in self.headers:
-            mask_column = self.mask['cleaning_qc']
-            self.df_masked[col] = self.df[col][mask_column]
-
-        # apply temp mask to all variables
-        for col in self.headers:
-            mask_column = self.mask[self.body_temp_header+'_qc']
-            self.df_masked[col] = self.df[col][mask_column]
-
     def create_radiation_variables(self):
         # set common parameters
         dims = ('time',)
@@ -64,7 +53,6 @@ class RadiationNetCDF(BaseNetCDF):
 
     def create_specific_variables(self):
         # create variables
-        self.apply_cleaning_and_temp_masks()
         self.create_radiation_variables()
 
         # create body temperature variable

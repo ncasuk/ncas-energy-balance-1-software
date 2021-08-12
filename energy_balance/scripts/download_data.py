@@ -11,6 +11,7 @@ import subprocess
 import pandas as pd
 from datetime import datetime, date
 from pycampbellcr1000 import CR1000
+from energy_balance import CONFIG
 
 
 def arg_parse():
@@ -44,7 +45,7 @@ def log(url, dir_path):
 
     # device.list_tables():
     # ['Status', 'Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation', 'DataTableInfo', 'Public']
-    tables = ['Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation']
+    tables = CONFIG['common']['logger_tables']
     date = datetime.utcnow().strftime("%Y-%m-%d")
 
     for table in tables:

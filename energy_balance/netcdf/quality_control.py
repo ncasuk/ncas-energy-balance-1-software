@@ -51,13 +51,13 @@ class QualityControl:
         raise NotImplementedError
 
     def create_masked_df(self, qc_flag):
-        mask = (self._qc <= qc_flag)
+        self.mask = (self._qc <= qc_flag)
 
-        self._df_masked = pd.DataFrame(columns = self.headers)
+        self._df_masked = pd.DataFrame(columns = [self.dt_header] + self.headers)
         self._df_masked[self.dt_header] = self._df[self.dt_header]
 
         for col in self.headers:
-            mask_column = mask[col+'_qc']
+            mask_column = self.mask[col+'_qc']
             self._df_masked[col] = self._df[col][mask_column]
 
     def execute_qc(self):

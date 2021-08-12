@@ -25,7 +25,7 @@ def arg_parse():
     parser.add_argument('-e', '--end-date',
                         type=str,
                         required=False,
-                        help="The end date to create netCDF files for. e.g. '2021-07-30' when creating daily files, '2021-07' when creating monthly files.")
+                        help="The end date to create netCDF files for. e.g. '2021-07-30' when creating daily files, '2021-07' when creating monthly files. This is inclusive.")
 
     parser.add_argument('-f', '--frequency',
                         type=str,
@@ -38,7 +38,7 @@ def arg_parse():
                         type=str,
                         required=False,
                         choices=['soil', 'radiation'],
-                        help="The data prodcut to create files for. If not provided files will be created for soil and radiation.")
+                        help="The data product to create files for. If not provided files will be created for soil and radiation.")
 
     return parser.parse_args()
 
