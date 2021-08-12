@@ -37,7 +37,7 @@ def arg_parse():
 
 
 def plot(start, end, columns, fpath):
-        """
+    """
     Plot the columns from the csv specified.
     
     :param start: (str) The start date/time from which to plot.
