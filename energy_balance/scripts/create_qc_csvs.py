@@ -43,22 +43,45 @@ def arg_parse():
 
     return parser.parse_args()
 
-def create_soil_files(start_date, frequency, path):
-    sqc = SoilQualityControl(start_date, frequency)
+def create_soil_files(date, frequency, path):
+    """
+    Create soil masked csv.
+    
+    :param date: (datetime.datetime) The date for which to create the file. 
+    :param frequency: (str) The frequency for files - daily or monthly.
+    :returns: None
+    """
+    sqc = SoilQualityControl(date, frequency)
     sqc.create_masked_csv(path)
 
-def create_radiation_files(start_date, frequency, path):
-    rqc = RadiationQualityControl(start_date, frequency)
+def create_radiation_files(date, frequency, path):
+    """
+    Create radiation masked csv.
+    
+    :param date: (datetime.datetime) The date for which to create the file.
+    :param frequency: (str) The frequency for files - daily or monthly.
+    :returns: None
+    """
+    rqc = RadiationQualityControl(date, frequency)
     rqc.create_masked_csv(path)
 
 def get_create_file(data_product):
+    """Get the function for creating files for the specified data product."""
     if data_product == "radiation":
         return create_radiation_files
     elif data_product == "soil":
         return create_soil_files
     
 def create_files(start_date, end_date, frequency, data_product):
-    # this creates a file per day
+    """
+    Create masked csvs for the specified data product in the time range provided.
+    
+    :param start_date: (datetime.datetime) The start date for which to create the files.
+    :param end_date: (datetime.datetime) The end date for which to create the files.
+    :param frequency: (str) The frequency for files - daily or monthly.
+    :param data_product: (str) The data product to create the csvs for e.g. radiation or soil
+    :returns: None
+    """
     path = CONFIG['common']['output_path']
     file_name = f'masked_{data_product}.csv'
     fpath = os.path.join(path, file_name)
