@@ -20,3 +20,22 @@ Scripts API
 .. automodule:: scripts.add_to_mysql
     :noindex:
     :members:
+
+**4. create_files:**
+
+.. automodule:: scripts.create_files
+    :noindex:
+    :members:
+
+**5. create_qc_csvs.py:**
+
+.. automodule:: scripts.create_qc_csvs
+    :noindex:
+    :members:
+
+**5. plot_csv.py:**
+
+.. automodule:: scripts.plot_csv
+    :noindex:
+    :members:
+    

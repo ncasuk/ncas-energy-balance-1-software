@@ -42,22 +42,46 @@ def arg_parse():
 
     return parser.parse_args()
 
-def create_soil_files(start_date, frequency):
-    sqc = SoilQualityControl(start_date, frequency)
-    SoilNetCDF(sqc.df, sqc.qc, start_date, frequency)
+def create_soil_files(date, frequency):
+    """
+    Create soil netcdf.
+    
+    :param date: (datetime.datetime) The date for which to create the file.
+    :param frequency: (str) The frequency for files - daily or monthly.
+    :returns: None
+    """
+    sqc = SoilQualityControl(date, frequency)
+    SoilNetCDF(sqc.df, sqc.qc, date, frequency)
 
-def create_radiation_files(start_date, frequency):
-    rqc = RadiationQualityControl(start_date, frequency)
-    RadiationNetCDF(rqc.df, rqc.qc, start_date, frequency)
+def create_radiation_files(date, frequency):
+    """
+    Create radiation netcdf.
+    
+    :param date: (datetime.datetime) The date for which to create the file.
+    :param frequency: (str) The frequency for files - daily or monthly.
+    :returns: None
+    """
+    rqc = RadiationQualityControl(date, frequency)
+    RadiationNetCDF(rqc.df, rqc.qc, date, frequency)
 
 def get_create_file(data_product):
+    """Get the function for creating files for the specified data product."""
     if data_product == "radiation":
         return create_radiation_files
     elif data_product == "soil":
         return create_soil_files
     
 def create_files(start_date, end_date, frequency, data_product=None):
-    # this creates a file per day
+    """
+    Create netcdf files for the specified data product in the time range provided.
+    If no data product is provided, netcdf files are created for soil and radiation.
+    
+    :param start_date: (datetime.datetime) The start date for which to create the files.
+    :param end_date: (datetime.datetime) The end date for which to create the files.
+    :param frequency: (str) The frequency for files - daily or monthly.
+    :param data_product: (str) The data product to create the netcdf files for e.g. radiation or soil
+    :returns: None
+    """
     while start_date <= end_date:
 
         if frequency == 'daily':

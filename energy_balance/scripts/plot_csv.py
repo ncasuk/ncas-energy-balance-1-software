@@ -37,6 +37,15 @@ def arg_parse():
 
 
 def plot(start, end, columns, fpath):
+        """
+    Plot the columns from the csv specified.
+    
+    :param start: (str) The start date/time from which to plot.
+    :param end: (str) The end date/time for the plot.
+    :param columns: (list) List of columns to plot.
+    :param fpath: (str) File path of csv file.
+    :returns: None
+    """
     dt_header = CONFIG['common']['datetime_header']
     df = pd.read_csv(fpath)
 
@@ -54,6 +63,12 @@ def plot(start, end, columns, fpath):
 
 
 def validate_time(time):
+    """
+    Validate that time is in the correct format (Y-M-d H:M:S)
+
+    :param time: (str) The time string to validate
+    :return time: (str) The input time, if validated. Otherwise an exception is raised.
+    """
     try:
         datetime.strptime(time, "%Y-%m-%d %H:%M:%S")
         return time
