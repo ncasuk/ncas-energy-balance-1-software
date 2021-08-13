@@ -20,7 +20,7 @@ class SoilQualityControl(QualityControl):
 
     def create_dataframes(self):
         """
-        SoilQualityControl specific implementation to create pandas dataframe from input csv and empty QC dataframe other than column names.
+        SoilQualityControl specific implementation to create pandas dataframe from input csvs and empty QC dataframe other than column names.
         Sets self._df and self._qc
         """
         date = self.prepare_date(CONFIG['soil']['input_date_format'])
