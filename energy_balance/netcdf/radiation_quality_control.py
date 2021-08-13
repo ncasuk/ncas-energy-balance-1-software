@@ -22,6 +22,10 @@ class RadiationQualityControl(QualityControl):
     headers = [lwdn_header, lwup_header, swdn_header, swup_header, body_temp_header]
 
     def create_dataframes(self):
+        """
+        RadiationQualityControl specific implementation to create pandas dataframe from input csvs and empty QC dataframe other than column names.
+        Sets self._df and self._qc
+        """
         date = self.prepare_date(CONFIG['radiation']['input_date_format'])
         input_file_path = CONFIG['radiation']['input_file_path']
         
@@ -40,6 +44,9 @@ class RadiationQualityControl(QualityControl):
         self._qc = pd.DataFrame(columns = [h+ '_qc' for h in self.headers])
 
     def qc_variables(self):
+        """
+        RadiationQualityControl specific implementation to set QC conditions and flags and record in QC dataframe.
+        """
         # downwelling longwave
         lwdn_conditions = [np.isnan(self._df[self.lwdn_header]), self._df[self.lwdn_header] < 0, self._df[self.lwdn_header] > 1000]
         lwdn_choices = [2, 3, 4]
@@ -78,6 +85,9 @@ class RadiationQualityControl(QualityControl):
         self.apply_qc(cleaning_conditions, cleaning_choices, 'cleaning')
 
     def apply_cleaning_and_temp_masks(self):
+        """
+        Apply cleaning QC and body temperature QC to all columns in the dataframe.
+        """
         # apply cleaning mask to all variables
         for col in self.headers:
             mask_column = self.mask['cleaning_qc']
@@ -89,5 +99,8 @@ class RadiationQualityControl(QualityControl):
             self._df_masked[col] = self._df_masked[col][mask_column]
 
     def create_masked_df(self, qc_flag):
+        """
+        RadiationQualityControl specific implementation to create the masked dataframe.
+        """
         super().create_masked_df(qc_flag)
         self.apply_cleaning_and_temp_masks()

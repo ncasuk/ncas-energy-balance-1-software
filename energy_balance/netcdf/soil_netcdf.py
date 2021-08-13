@@ -9,6 +9,12 @@ from .base_netcdf import BaseNetCDF
 
 class SoilNetCDF(BaseNetCDF):
 
+    """
+    Class for creating soil netcdf files.
+    Creates soil specific dimensions and variables 
+
+    """
+
     soil_moisture_headers = CONFIG['soil']['soil_moisture_headers']
     soil_temperature_headers = CONFIG['soil']['soil_temperature_headers']
     soil_heat_flux_headers = CONFIG['soil']['soil_heat_flux_headers']
@@ -18,18 +24,35 @@ class SoilNetCDF(BaseNetCDF):
 
     @staticmethod
     def convert_temps_to_kelvin(temps):
+        """
+        Convert temperatures from degrees celsius to Kelvin.
+        
+        :param temps: (sequence) Temperatures to convert (in degrees C).
+        :returns: (list) The temperatures converted to Kelvin.
+        """
         temp_values = []
         for temp in temps:
             temp_values.append(temp + 273.15)
         return temp_values
 
     def create_specific_dimensions(self):
-        # create index dimension of length 3
+        """
+        SoilNetCDF specific implementation to create index dimension.
+        """
+        # create index dimension of length specified in config file.
         self.dataset.createDimension("index", self.index_length)
 
-    def create_variable(self, var_name, data_type, dims, headers, **kwargs):
-        # Create variable
-        var = self.dataset.createVariable(var_name, data_type, dims, fill_value=-1e+20)
+    def create_variable(self, name, data_type, headers, **kwargs):
+        """
+        SoilNetCDF specific implementation to account for index dimension.
+
+        :param name: (str) The name of the variable to be created.
+        :param data_type: The data type of the variable to be created e.g. numpy.float32 
+        :param headers: (list) The name of the columns in the pandas dataframe to use to populate the data of this variable.
+        :param kwargs: (dict) Dictionary of attributes {'attr_name': 'attr_value'} to set on the variable e.g. {'standard_name': 'soil_temperature'}
+
+        """
+        var = self.dataset.createVariable(name, data_type, ("time","index"), fill_value=-1e+20)
 
         # get the values
         values = np.transpose(np.array([self.df[headers[n]] for n in range(self.index_length)]))
@@ -49,6 +72,9 @@ class SoilNetCDF(BaseNetCDF):
             setattr(var, k, v)
 
     def create_soil_temp_variable(self):
+        """
+        Create soil temperature variable on the netCDF dataset.
+        """
         # Create the soil temp variable - convert to kelvin
         for col in self.soil_temperature_headers:
             self.df[col] = self.convert_temps_to_kelvin(self.df[col])
@@ -63,18 +89,24 @@ class SoilNetCDF(BaseNetCDF):
                  "standard_name": "soil_temperature",
                  "coordinates": "latitude longitude"}
 
-        self.create_variable("soil_temperature", np.float32, ("time","index"), self.soil_temperature_headers, **attrs)
+        self.create_variable("soil_temperature", np.float32, self.soil_temperature_headers, **attrs)
 
     def create_soil_moisture_variable(self):
+        """
+        Create soil water potential variable on the netCDF dataset.
+        """
         # Set water potential variable attributes
         attrs = {"cell_methods": "time:mean",
                  "long_name": "Soil Water Potential",
                  "units": "kPa",
                  "coordinates": "latitude longitude"}
 
-        self.create_variable("soil_water_potential", np.float32, ("time","index"), self.soil_moisture_headers, **attrs)
+        self.create_variable("soil_water_potential", np.float32, self.soil_moisture_headers, **attrs)
 
     def create_soil_heat_flux_variable(self):
+        """
+        Create soil heat flux variable on the netCDF dataset.
+        """
         # Set soil heat flux variable attributes
         attrs = {"cell_methods": "time:mean",
                  "long_name": "Downward Heat Flux in Soil",
@@ -82,9 +114,17 @@ class SoilNetCDF(BaseNetCDF):
                  "units": "W m-2",
                  "coordinates": "latitude longitude"}
 
-        self.create_variable("downward_heat_flux_in_soil", np.float32, ("time","index"), self.soil_heat_flux_headers, **attrs)
+        self.create_variable("downward_heat_flux_in_soil", np.float32, self.soil_heat_flux_headers, **attrs)
 
     def create_qc_variable(self, name, headers, **kwargs):
+        """
+        SoilNetCDF specific implementation to account for index dimension. 
+
+        :param name: (str) The name of the variable to be created.
+        :param header: (list) The names of the columns in the df pandas dataframe to use to populate the data of this variable.
+        :param kwargs: (dict) Dictionary of attributes {'attr_name': 'attr_value'} to set on the variable e.g. {'standard_name': 'soil_temperature'}
+
+        """
         var = self.dataset.createVariable(name, np.byte, ("time","index"))
         qc_headers = [h + '_qc' for h in headers]
         var[:] = np.transpose(np.array([self.qc[qc_headers[n]] for n in range(self.index_length)]))
@@ -93,6 +133,9 @@ class SoilNetCDF(BaseNetCDF):
             setattr(var, k, v)
 
     def create_specific_variables(self):
+        """
+        SoilNetCDF specific implementation to create all soil specific variables.
+        """
         # create variables
         self.create_soil_temp_variable()
         self.create_soil_moisture_variable()

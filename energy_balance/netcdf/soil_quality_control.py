@@ -19,6 +19,10 @@ class SoilQualityControl(QualityControl):
     headers = soil_moisture_headers + soil_temperature_headers + soil_heat_flux_headers
 
     def create_dataframes(self):
+        """
+        SoilQualityControl specific implementation to create pandas dataframe from input csv and empty QC dataframe other than column names.
+        Sets self._df and self._qc
+        """
         date = self.prepare_date(CONFIG['soil']['input_date_format'])
         input_file_path = CONFIG['soil']['input_file_path']
         
@@ -41,6 +45,9 @@ class SoilQualityControl(QualityControl):
         self._qc = pd.DataFrame(columns = [h+ '_qc' for h in self.headers])
 
     def qc_variables(self):
+        """
+        SoilQualityControl specific implementation to set QC conditions and flags and record in QC dataframe.
+        """
         # soil temperature
         max_temp = CONFIG['soil']['max_expected_temp']
         min_temp = CONFIG['soil']['min_expected_temp']

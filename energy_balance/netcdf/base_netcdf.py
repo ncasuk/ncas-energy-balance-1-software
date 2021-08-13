@@ -12,6 +12,19 @@ from energy_balance import CONFIG
 
 class BaseNetCDF:
 
+    """
+    Base class used for creating netCDF files.
+    Creates all the common variables found in netCDF files under the NCAS-GENERAL Data Standard.
+    Sets all the required global attributes.
+
+    Constant values are taken from the config file, excluding 'headers' and 'data_product' which must be set in each specific implementation.
+
+    :param df: A pandas dataframe containing all columns required to create the netCDF file.
+    :param qc: A pandas dataframe with the same columns as df, but containg the quality control values instead. (i.e. 1, 2, 3 etc.)
+    :param date: (datetime.datetime) The date to create the netCDF file for. If frequency is monthly, only the year and month will be taken into account.
+    :param frequency: (str) 'daily' or 'monthly'. Determines whether the file will use data from one day or for one month.
+    """
+
     dt_header = CONFIG['common']['datetime_header']
     headers = 'UNDEFINED'
     data_product = "UNDEFINED"
@@ -37,6 +50,14 @@ class BaseNetCDF:
         print(f"Dataset created at {output_file}")
 
     def convert_date_to_string(self, date, frequency):
+        """
+        Generate a date string for the file name based on the date provided and the frequency required.
+
+        :param date: (datetime.datetime) The date to convert to string.
+        :param frequency: (str) The frequency at which to have the date string.
+        :returns: (str) The date now converted to string format.
+        """
+
         if frequency == "monthly":
             date = date.strftime("%Y%m")
 
@@ -50,6 +71,12 @@ class BaseNetCDF:
 
     @staticmethod
     def convert_times(times):
+        """
+        Convert times from strings to total seconds since 1970-01-01T00:00:00.
+
+        :param times: (sequence) Times to convert to total seconds since 1970-01-01T00:00:00.
+        :returns: (list) The times converted to total seconds since 1970-01-01T00:00:00. 
+        """
         ref_time = datetime.strptime("1970-01-01T00:00:00", "%Y-%m-%dT%H:%M:%S")
         
         time_values = []
@@ -62,6 +89,12 @@ class BaseNetCDF:
 
     @staticmethod
     def times_as_datetimes(times):
+        """
+        Convert times from strings to datetimes.
+
+        :param times: (sequence) Times to convert to datetimes in format Y-m-d H:M:S.
+        :returns: (list) The times converted to datetimes.
+        """
         datetimes = []
         for t in times:
             t = datetime.strptime(t, "%Y-%m-%d %H:%M:%S")
@@ -69,6 +102,12 @@ class BaseNetCDF:
         return datetimes
 
     def get_masked_data(self, mask_value):
+        """
+        Create masked pandas dataframe based on self.qc and the qc flag requested.
+        Sets self.df_masked.
+
+        :param mask_value: (int) Max value of qc to show i.e. 1 will show only 'good data', 2 will show good data and data marked with a flag of 2.
+        """
         self.mask = (self.qc <= mask_value)
         self.df_masked = pd.DataFrame(columns = self.headers)
         self.df_masked[self.dt_header] = self.df[self.dt_header]
@@ -78,6 +117,9 @@ class BaseNetCDF:
             self.df_masked[col] = self.df[col][mask_column]
 
     def create_time_variable(self):
+        """
+        Create the common time variable.
+        """
         time_units = "seconds since 1970-01-01 00:00:00"
         time_var = self.dataset.createVariable("time", np.float64, ("time",))
 
@@ -93,6 +135,9 @@ class BaseNetCDF:
         time_var.valid_max = time_var[:].max()
 
     def create_lon_variable(self):
+        """
+        Create the common longitude variable.
+        """
         lon_var = self.dataset.createVariable("longitude", np.float32, ("longitude",))
         lon_var[:] = CONFIG['common']['longitude_value']
         lon_var.units = "degrees_east"
@@ -100,15 +145,27 @@ class BaseNetCDF:
         lon_var.long_name = "Longitude"
 
     def create_lat_variable(self):
+        """
+        Create the common latitude variable.
+        """
         lat_var = self.dataset.createVariable("latitude", np.float32, ("latitude",))
         lat_var[:] = CONFIG['common']['latitude_value']
         lat_var.units = "degrees_north"
         lat_var.standard_name = "latitude"
         lat_var.long_name = "Latitude"
 
-    def create_variable(self, var_name, data_type, dims, header, **kwargs):
+    def create_variable(self, name, data_type, dims, header, **kwargs):
+        """
+        Generic method to create a variable in the netCDF4 dataset.
+
+        :param name: (str) The name of the variable to be created.
+        :param data_type: The data type of the variable to be created e.g. numpy.float32 
+        :param dims: (tuple) The dimensions of the variable to be created e.g. ('time', ) or ('time', 'index')
+        :param header: (str) The name of the column in the pandas dataframe to use to populate the data of this variable.
+        :param kwargs: (dict) Dictionary of attributes {'attr_name': 'attr_value'} to set on the variable e.g. {'standard_name': 'soil_temperature'}
+        """
         # Create variable
-        var = self.dataset.createVariable(var_name, data_type, dims, fill_value=self.fill_value)
+        var = self.dataset.createVariable(name, data_type, dims, fill_value=self.fill_value)
 
         # convert any nan values to fill values
         self.df[header][np.isnan(self.df[header])] = self.fill_value
@@ -126,6 +183,14 @@ class BaseNetCDF:
             setattr(var, k, v)
 
     def create_time_related_variable(self, name, data_type, values, long_name):
+        """
+        Generic method to create variables day of year, day, year, month, hour, second, minute.
+
+        :param name: (str) The name of the variable to be created.
+        :param data_type: The data type of the variable to be created e.g. numpy.float32 
+        :param values: (sequence) The values to set for this variable.
+        :param long_name: (str) The long name of this variable.
+        """
         var = self.dataset.createVariable(name, data_type, ("time",))
         var[:] = values
         var.units = "1"
@@ -134,6 +199,15 @@ class BaseNetCDF:
         var.valid_max = var[:].max()
 
     def create_qc_variable(self, name, header, dimensions, **kwargs):
+        """
+        Generic method to create a qc variable on the dataset.
+
+        :param name: (str) The name of the variable to be created.
+        :param header: (str) The name of the column in the df pandas dataframe to use to populate the data of this variable.
+        :param dimensions: (tuple) The dimensions of the variable to be created e.g. ('time', ) or ('time', 'index')
+        :param kwargs: (dict) Dictionary of attributes {'attr_name': 'attr_value'} to set on the variable e.g. {'standard_name': 'soil_temperature'}
+
+        """
         var = self.dataset.createVariable(name, np.byte, dimensions)
         qc_header = header + '_qc'
         var[:] = self.qc[qc_header]
@@ -142,6 +216,9 @@ class BaseNetCDF:
             setattr(var, k, v)
 
     def set_global_attributes(self):
+        """
+        Sets the global attributes in the dataset based on those listed in the config file.
+        """
         for k, v in CONFIG['global'].items():
             setattr(self.dataset, k, v)
 
@@ -150,12 +227,21 @@ class BaseNetCDF:
         self.dataset.time_coverage_end = datetime.strptime(self.times.iloc[-1], "%Y-%m-%d %H:%M:%S").isoformat()
 
     def create_specific_dimensions(self):
+        """
+        Class specific implementation to create dimensions specific to that data product.
+        """
         raise NotImplementedError
 
     def create_specific_variables(self):
+        """
+        Class specific implementation to create variables specific to that data product, including any qc variables.
+        """
         raise NotImplementedError
 
     def create_netcdf(self):
+        """
+        Method to create the netCDF dataset
+        """
         # Create the time dimension - with unlimited length
         self.dataset.createDimension("time", None)
         # Create the latitude dimension - with length 1 as stationary

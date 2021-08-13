@@ -19,10 +19,16 @@ class RadiationNetCDF(BaseNetCDF):
     data_product = 'radiation'
 
     def create_specific_dimensions(self):
+        """
+        Create any radiation specific dimensions - there are none.
+        """
         # no extra dimensions to create
         pass
 
     def create_radiation_variables(self):
+        """
+        Create all radiation variables.
+        """
         # set common parameters
         dims = ('time',)
         data_type = np.float32
@@ -52,6 +58,9 @@ class RadiationNetCDF(BaseNetCDF):
 
 
     def create_specific_variables(self):
+        """
+        RadiationNetCDF specific implementation to create all radiation specific variables, including qc variables.
+        """
         # create variables
         self.create_radiation_variables()
 
