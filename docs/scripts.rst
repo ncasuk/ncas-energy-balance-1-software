@@ -15,7 +15,7 @@ Comments explain various settings. To see the config file: https://github.com/nc
 
 Use the ``-h`` option on any script to see the command line arguments available.
 
-**1. download_data:**
+**1. download_data.py:**
 
 - Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file.
 - The script does not take any command line arguments.
@@ -46,7 +46,7 @@ This sets this script running every 5 minutes. The first file path needs to poin
 The final file path points to the location at which to write a log file. This can be excluded if this is not required.
 
 
-**2. download_data_by_date:**
+**2. download_data_by_date.py:**
 
 - Intended to be used to bulk donwload data over a range of days. 
 - Useful if logger has been turned off/ was down etc.
@@ -75,7 +75,7 @@ This next command will download data only for 21/07/2021.
     $ python download_data_by_date.py -s 2021-07-21
 
 
-**3. add_to_mysql:**
+**3. add_to_mysql.py:**
 
 - This script will load the csv data for today's files, created by the `download_data` script, into my sql tables, providing the tables have already been created in the database.
 - This could be set up as cron job along with the `download_data` script, to keep the tables up to date.
