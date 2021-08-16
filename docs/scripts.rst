@@ -194,7 +194,7 @@ Note that datetimes should be provided in quotations to allow them to be parsed 
 .. code-block:: console
     
     $ cd energy_balance/scripts
-    $ python plot_csv.py -s '2021-07-10 04:00' -e '2021-07-10 16:00' -f /path/to/my/file.csv -c shf_1,shf_2,shf_3
+    $ python plot_csv.py -s '2021-07-10 04:00' -e '2021-07-10 16:00' -fp /path/to/my/file.csv -c shf_1,shf_2,shf_3
 
 
 
