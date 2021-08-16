@@ -17,7 +17,7 @@ def get_config(package=None):
 
 def _gather_config_files(package=None):
     conf_files = []
-    default_config = os.path.join(os.path.dirname(__file__), "..", "config.ini")
+    default_config = os.path.join(os.path.dirname(__file__), "etc", "config.ini")
 
     if not os.path.isfile(default_config):
         print(f"[WARN] Cannot load default config file from: {default_config}")
