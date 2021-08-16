@@ -32,12 +32,6 @@ def arg_parse():
         required=True,
         help="Database name")
 
-    parser.add_argument("-f",
-        "--file-path",
-        type=str,
-        required=True,
-        help="Path of directory containing the csv files.")
-
     return parser.parse_args()
 
 
@@ -94,7 +88,7 @@ def main():
     user = args.user
     password = args.password
     database = args.database
-    dir_path = args.file_path
+    dir_path = CONFIG['common']['logger_csv_path']
 
     insert_into_tables(user, password, database, dir_path)
 

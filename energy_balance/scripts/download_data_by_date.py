@@ -16,11 +16,6 @@ from energy_balance import CONFIG
 def arg_parse():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('url', action="store",
-                        help="Specify URL for connection link. "
-                        "E.g. tcp:iphost:port or serial:/dev/ttyUSB0:19200:8N1"
-                        " or serial:/COM1:19200:8N1")
-
     parser.add_argument('-s', '--start-date',
                         type=str,
                         required=True,
@@ -30,13 +25,7 @@ def arg_parse():
                         type=str,
                         required=False,
                         help="The end date to extract data for")
-
-    parser.add_argument("-f",
-                        "--file-path",
-                        type=str,
-                        required=True,
-                        help="Path to directory in which to write the csv files.")
-
+                        
     return parser.parse_args()
 
 
@@ -113,8 +102,6 @@ def get_data_from_range(device, table, csv_path, start, end, header):
 
 def main():
     args = arg_parse()
-    url = args.url
-    dir_path = args.file_path
     start_date = datetime.strptime(args.start_date, "%Y-%m-%d")
 
     # if no end date, make it the same as the start date, then data will be downloaded for one day only
@@ -122,6 +109,9 @@ def main():
         end_date = datetime.strptime(args.end_date, "%Y-%m-%d")
     else:
         end_date = start_date
+
+    url = CONFIG['common']['logger_url']
+    dir_path = CONFIG['common']['logger_csv_path']
 
     get_data(url, start_date, end_date, dir_path)
 

@@ -23,10 +23,10 @@ def arg_parse():
                         required=False,
                         help="The end date/time for the plot in 'YYYY-MM-dd HH:MM:SS' format. e.g. '2021-07-10 16:00'.")
 
-    parser.add_argument('-f', '--file',
+    parser.add_argument('-fp', '--file-path',
                         type=str,
                         required=True,
-                        help="The path to the csv file to plot.")
+                        help="The path to the csv file to plot. e.g. /path/to/file.csv")
 
     parser.add_argument('-c', '--columns',
                         type=str,
@@ -87,7 +87,7 @@ def main():
     if end:
         end = validate_time(end)
 
-    fpath = args.file
+    fpath = args.file_path
     columns = args.columns.strip(' ').split(',')
 
     plot(start, end, columns, fpath)

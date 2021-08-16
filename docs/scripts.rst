@@ -18,8 +18,9 @@ Use the ``-h`` option on any script to see the command line arguments available.
 **1. download_data:**
 
 - Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file.
-- The files are made in the directory specified on the command line, in a directory named after the table e.g. ``<chosen-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv``
-- The datalogger URL must be provided as a command line argument e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port
+- The script does not take any command line arguments.
+- The files are made in the directory specified in the config file, under ``logger_csv_path``, in a directory named after the table e.g. ``<chosen-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv``
+- The datalogger URL must be set in the config file e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port
 - Edit ``logger_tables`` in the config file to change the tables downloaded. The default tables are Housekeeping, GPS_datetime, SoilTemperature, SoilMoisture, SoilHeatFlux and Radiation.
 
 To run once:
@@ -27,7 +28,7 @@ To run once:
 .. code-block:: console
     
     $ cd energy_balance/scripts
-    $ python download_data.py serial:/dev/ttyUSB0:115200 -f /home/campbell_data
+    $ python download_data.py
 
 To set up a cron job:
 
@@ -39,7 +40,7 @@ Add a command, such as the one below, to this file:
 
 .. code-block::
 
-    */5 * * * * . /home/pi/ncas-energy-balance-1-software/venv/bin/activate && /home/pi/ncas-energy-balance-1-software/scripts/download_data.py serial:/dev/ttyUSB0:115200 -f /home/campbell_data >> /home/pi/campbell_data/cron.log 2>&1
+    */5 * * * * . /home/pi/ncas-energy-balance-1-software/venv/bin/activate && /home/pi/ncas-energy-balance-1-software/energy_balance/scripts/download_data.py >> /home/pi/campbell_data/cron.log 2>&1
 
 This sets this script running every 5 minutes. The first file path needs to point to your virtual environment and the second to the location of the script.
 The final file path points to the location at which to write a log file. This can be excluded if this is not required.
@@ -50,9 +51,9 @@ The final file path points to the location at which to write a log file. This ca
 - Intended to be used to bulk donwload data over a range of days. 
 - Useful if logger has been turned off/ was down etc.
 - This downloads data from tables on the logger and saves to a daily csv file.
-- The files are made in the directory specified on the command line, in a directory named after the table e.g. ``<chosen-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv``. 
-- If using in conjuction with the ``download_data.py`` script, the same directory should be specified
-- The datalogger URL must be provided as a command line argument e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port
+- The files are made in the directory specified in the config file, under ``logger_csv_path``, in a directory named after the table e.g. ``<chosen-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv``. 
+- Can be used in conjuction with the ``download_data.py`` script.
+- The datalogger URL must be set in the config file e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port
 - The start and end dates of the days to download should be provided on the command line. A start date is required but an end date is not. If an end date is not provided, data is downloaded only for the day provided as the start date.
 - If a file for a day has partial data, this script will download the rest of the data for that day, following on from the latest entry in that file.
 - Edit ``logger_tables`` in the config file to change the tables downloaded. The default tables are Housekeeping, GPS_datetime, SoilTemperature, SoilMoisture, SoilHeatFlux and Radiation.
@@ -64,14 +65,14 @@ The below command will download data for 21/07/2021, 22/07/2021 and 23/07/2021 a
 .. code-block:: console
     
     $ cd energy_balance/scripts
-    $ python download_data_by_date.py serial:/dev/ttyUSB0:115200 -s 2021-07-21 -e 2021-07-23 -f /home/campbell_data
+    $ python download_data_by_date.py -s 2021-07-21 -e 2021-07-23
 
 
 This next command will download data only for 21/07/2021.
 
 .. code-block:: console
     
-    $ python download_data_by_date.py serial:/dev/ttyUSB0:115200 -s 2021-07-21 -f /home/campbell_data
+    $ python download_data_by_date.py -s 2021-07-21
 
 
 **3. add_to_mysql:**
@@ -79,27 +80,27 @@ This next command will download data only for 21/07/2021.
 - This script will load the csv data for today's files, created by the `download_data` script, into my sql tables, providing the tables have already been created in the database.
 - This could be set up as cron job along with the `download_data` script, to keep the tables up to date.
 - Edit ``logger_tables`` and ``mysql_tables`` in the config file to change the table names. The default dictionary is: {'Housekeeping': 'housekeeping', 'GPS_datetime': 'gps', 'SoilTemperature': 'soil_temp', 'SoilMoisture': 'soil_moisture', 'SoilHeatFlux': 'soil_heat_flux', 'Radiation': 'radiation'}.
-- The top level directory containing the csv files should be specified on the command line. (i.e. the same as that specified for the ``download_data.py`` script)
+- The top level directory containing the csv files is taken from the config file (under ``logger_csv_path``), assumed to be the same as that used to create the files. (i.e. the same as that used for the ``download_data.py`` script)
 - The username, password and database name should also be provided as command line arguments. See below:
 
 .. code-block:: console
     
     $ cd energy_balance/scripts
-    $ python add_to_mysql.py -u <username> -p <password> -d <database> -f /home/campbell_data
+    $ python add_to_mysql.py -u <username> -p <password> -d <database>
 
 
 **4. create_files.py:**
 
 - This script can be used to make netCDF files, that conform to the NCAS-GENERAL Data Standard, for soil and radiation data products.
-- For this to work, ensure settings in the config file are filled in correctly, e.g. column names, input files
+- For this to work, ensure settings in the config file are filled in correctly, e.g. column names, input files, input date format
 - Some of the quality control settings can be adjusted in the config file. e.g. the max/min temperature expected for Soil Temperature and the lower and upper bounds for the cleaning time of the radiation sensors.
 - It takes some command line arguments to specify options for the creation of the files.
-- The files are created at the ``output_file_path`` specified in the config file.
+- The files are created at the ``netcdf_path`` specified in the config file.
 
 :: 
 
     usage: create_files.py [-h] -s START_DATE [-e END_DATE] [-f {daily,monthly}]
-                        [-d {soil,radiation}]
+                        -d {soil,radiation}
 
     optional arguments:
     -h, --help            show this help message and exit
@@ -115,8 +116,7 @@ This next command will download data only for 21/07/2021.
                             The frequency for creating the netCDF files, options
                             are daily or monthly. The default is monthly.
     -d {soil,radiation}, --data-product {soil,radiation}
-                            The data product to create files for. If not provided
-                            files will be created for soil and radiation.
+                            The data product to create files for.
 
 
 The start date must always be provided, but an end date is not required. If an end date is not provided, files are only created for the date provided as the start date. An example of usage is:
@@ -129,18 +129,17 @@ The start date must always be provided, but an end date is not required. If an e
 **5. create_qc_csvs.py:**
 
 - This script will generate csvs for soil/radiation data that have been quality controlled according the level of quality control specified in the config file.
+- The file path must be provided as a command line argument.
 - Setting the level as 1, means only 'good' data is provided. This can be increased to include data from other qc flags, as described by the variables in the netcdf files. (The level chosen will include data from that level and below.)
 - The quality control flags data outside operational bounds, suspect data and data taken when sensors are being cleaned.
 - Some of the quality control settings can be adjusted in the config file. e.g. the max/min temperature expected for Soil Temperature and the lower and upper bounds for the cleaning time of the radiation sensors.
 - These csvs can be plotted using script #6 below.
 
-- The command line arguments are the same as script #5, except the data product must be provided.
-
 :: 
 
 
         usage: create_qc_csvs.py [-h] -s START_DATE [-e END_DATE] [-f {daily,monthly}]
-                                -d {soil,radiation}
+                                -d {soil,radiation} -fp FILE_PATH
 
         optional arguments:
         -h, --help            show this help message and exit
@@ -157,11 +156,13 @@ The start date must always be provided, but an end date is not required. If an e
                                 are daily or monthly. The default is monthly.
         -d {soil,radiation}, --data-product {soil,radiation}
                                 The data product to create files for.
+        -fp FILE_PATH, --file-path FILE_PATH
+                                Filename of where to write file e.g. /path/to/file.csv
 
 .. code-block:: console
     
         $ cd energy_balance/scripts
-        $ python create_qc_csvs.py -s 2021-07-30 -f daily -d radiation
+        $ python create_qc_csvs.py -s 2021-07-30 -f daily -d radiation -fp /path/to/output/file.csv
 
 **6. plot_csv.py:**
 
@@ -181,7 +182,8 @@ The start date must always be provided, but an end date is not required. If an e
                             HH:MM:SS' format. e.g. '2021-07-10 04:00'.
     -e END, --end END     The end date/time for the plot in 'YYYY-MM-dd
                             HH:MM:SS' format. e.g. '2021-07-10 16:00'.
-    -f FILE, --file FILE  The path to the csv file to plot.
+    -fp FILE_PATH, --file-path FILE_PATH
+                            The path to the csv file to plot. e.g. /path/to/file.csv
     -c COLUMNS, --columns COLUMNS
                             The columns from the csv to plot against datetime,
                             provide as comma separated list if more than one e.g. 'IR01Dn,IR01Up'.

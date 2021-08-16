@@ -5,30 +5,12 @@ __date__ = '15 Jul 2021'
 __contact__ = 'eleanor.smith@stfc.ac.uk'
 
 
-import argparse
 import os
 import subprocess
 import pandas as pd
 from datetime import datetime, date
 from pycampbellcr1000 import CR1000
 from energy_balance import CONFIG
-
-
-def arg_parse():
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('url', action="store",
-                        help="Specify URL for connection link. "
-                        "E.g. tcp:iphost:port or serial:/dev/ttyUSB0:19200:8N1"
-                        " or serial:/COM1:19200:8N1")
-
-    parser.add_argument("-f",
-                        "--file-path",
-                        type=str,
-                        required=True,
-                        help="Path to directory in which to write the csv files.")
-
-    return parser.parse_args()
 
 
 def log(url, dir_path):
@@ -99,9 +81,8 @@ def get_todays_data(url, table, csv_path):
 
 
 def main():
-    args = arg_parse()
-    url = args.url
-    dir_path = args.file_path
+    url = CONFIG['common']['logger_url']
+    dir_path = CONFIG['common']['logger_csv_path']
 
     log(url, dir_path)
 

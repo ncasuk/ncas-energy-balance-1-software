@@ -40,6 +40,12 @@ def arg_parse():
                         required=True,
                         choices=['soil', 'radiation'],
                         help="The data product to create files for.")
+    
+    parser.add_argument("-fp",
+                        "--file-path",
+                        type=str,
+                        required=True,
+                        help="Filename of where to write file e.g. /path/to/file.csv")
 
     return parser.parse_args()
 
@@ -72,7 +78,7 @@ def get_create_file(data_product):
     elif data_product == "soil":
         return create_soil_files
     
-def create_files(start_date, end_date, frequency, data_product):
+def create_files(start_date, end_date, frequency, data_product, fpath):
     """
     Create masked csvs for the specified data product in the time range provided.
     
@@ -80,12 +86,9 @@ def create_files(start_date, end_date, frequency, data_product):
     :param end_date: (datetime.datetime) The end date for which to create the files.
     :param frequency: (str) The frequency for files - daily or monthly.
     :param data_product: (str) The data product to create the csvs for e.g. radiation or soil
+    :param fpath: (str) The filename of where to create the output file.
     :returns: None
     """
-    path = CONFIG['common']['output_path']
-    file_name = f'masked_{data_product}.csv'
-    fpath = os.path.join(path, file_name)
-
     while start_date <= end_date:
 
         if frequency == 'daily':
@@ -122,8 +125,9 @@ def main():
         end_date = start_date
 
     data_product = args.data_product
+    fpath = args.file_path
 
-    create_files(start_date, end_date, freq, data_product)
+    create_files(start_date, end_date, freq, data_product, fpath)
 
 if __name__ == '__main__':
     main()

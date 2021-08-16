@@ -36,9 +36,9 @@ def arg_parse():
 
     parser.add_argument('-d', '--data-product',
                         type=str,
-                        required=False,
+                        required=True,
                         choices=['soil', 'radiation'],
-                        help="The data product to create files for. If not provided files will be created for soil and radiation.")
+                        help="The data product to create files for.")
 
     return parser.parse_args()
 
@@ -89,27 +89,12 @@ def create_files(start_date, end_date, frequency, data_product=None):
         else:
             delta = relativedelta(months=1)
 
-        if data_product:
-            try:
-                func = get_create_file(data_product)
-                func(start_date, frequency)
-            except FileNotFoundError:
-                start_date += delta
-                continue
-
-        else:
-            # soil
-            try:
-                create_soil_files(start_date, frequency)
-            except FileNotFoundError:
-                pass
-            
-            # radiation
-            try:
-                create_radiation_files(start_date, frequency)
-            except FileNotFoundError:
-                start_date += delta
-                continue
+        try:
+            func = get_create_file(data_product)
+            func(start_date, frequency)
+        except FileNotFoundError:
+            start_date += delta
+            continue
     
         start_date += delta
 
