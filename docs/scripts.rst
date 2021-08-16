@@ -11,7 +11,7 @@ To see the API and source code, go to `scripts-api`_.
 
 Various settings used in these scripts can be set/changed in the config file: ncas-energy-balance-1-software/energy_balance/etc/config.ini.
 This includes input/output file paths and settings for netcdf global attributes.
-Comments explain various settings. To see the config file: https://github.com/ncasuk/ncas-energy-balance-1-software/blob/master//energy_balance/etc/config.ini
+Comments explain various settings. To see the config file: https://github.com/ncasuk/ncas-energy-balance-1-software/blob/master/energy_balance/etc/config.ini
 
 Use the ``-h`` option on any script to see the command line arguments available.
 
