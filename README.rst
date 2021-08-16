@@ -18,7 +18,7 @@ In order to use the scripts, create a virtual environment and install the packag
 
     $ python -m venv venv
     $ source venv/bin/activate
-    $ pip install -e .
+    $ pip install .
 
 
 Sometimes there can be a problem installing numpy on Raspberry Pi. The troubleshooting page for this is: https://numpy.org/devdocs/user/troubleshooting-importerror.html
