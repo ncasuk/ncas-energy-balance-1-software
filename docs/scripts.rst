@@ -7,21 +7,28 @@ Scripts
 The scripts make use of the package PyCampbellCR1000 (on an updated fork) - this works for CR3000 loggers as well.
 The documentation for this package can be found here: https://pycampbellcr1000.readthedocs.io/en/latest/
 
-To see the API and source code, go to `scripts-api`_.
+To see the API and source code, go to `api`_.
 
 Various settings used in these scripts can be set/changed in the config file: ncas-energy-balance-1-software/energy_balance/etc/config.ini.
 This includes input/output file paths and settings for netcdf global attributes.
-Comments explain various settings. To see the config file: https://github.com/ncasuk/ncas-energy-balance-1-software/blob/master/energy_balance/etc/config.ini
+This is explained on the `config_` page.
 
 Use the ``-h`` option on any script to see the command line arguments available.
 
+.. note::
+    To find your datalogger URL you must know:
+    - Whether are you connecting via tcp/ip or serial
+    - If tcp/ip, you need the ip and the port you are connecting to. (URL = 'tcp:host-ip:port')
+    - If serial, you need the path to the port and the baud rate of the port. (URL = 'serial:path:baudrate') 
+    - For serial connections, You can also provide the bytesize, parity and stopbits if required, this is assumed to be '8N1' if not provided. (e.g. 'serial:/dev/ttyUSB0:115200:8N1') 
+  
 **1. download_data.py:**
 
-- Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file.
+- Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file. Doing this provides a stream of data and saving as daily files allows netCDF files to easily be created. 
 - The script does not take any command line arguments.
 - The files are made in the directory specified in the config file, under ``logger_csv_path``, in a directory named after the table e.g. ``<chosen-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv``
-- The datalogger URL must be set in the config file e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port
-- Edit ``logger_tables`` in the config file to change the tables downloaded. The default tables are Housekeeping, GPS_datetime, SoilTemperature, SoilMoisture, SoilHeatFlux and Radiation.
+- The datalogger URL must be set in the config file e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port (see above note explaining this.)
+- Edit ``logger_tables`` in the config file to change the tables downloaded. The default tables are Housekeeping, GPS_datetime, SoilTemperature, SoilMoisture, SoilHeatFlux and Radiation, these are AMOF specific.
 
 To run once:
 
@@ -29,6 +36,15 @@ To run once:
     
     $ cd energy_balance/scripts
     $ python download_data.py
+
+This will produce an output, example given below, showing how many records were found:
+::
+    Your download is starting.
+    Packet 0 with 13 records
+    Packet 1 with 14 records
+    Packet 2 with 14 records
+    ---------------------------
+    41 new records were found
 
 To set up a cron job:
 
@@ -42,17 +58,26 @@ Add a command, such as the one below, to this file:
 
     */5 * * * * . /home/pi/ncas-energy-balance-1-software/venv/bin/activate && /home/pi/ncas-energy-balance-1-software/energy_balance/scripts/download_data.py >> /home/pi/campbell_data/cron.log 2>&1
 
+The section ``. /home/pi/ncas-energy-balance-1-software/venv/bin/activate`` activates the virtual environment.
 This sets this script running every 5 minutes. The first file path needs to point to your virtual environment and the second to the location of the script.
 The final file path points to the location at which to write a log file. This can be excluded if this is not required.
+
+The command:
+
+.. code-block:: console
+
+    $ crontab -l
+
+will list cron jobs you have set up.
 
 
 **2. download_data_by_date.py:**
 
-- Intended to be used to bulk donwload data over a range of days. 
-- Useful if logger has been turned off/ was down etc.
+- Intended to be used to bulk download data over a range of days. 
+- Useful if system has been turned off/ was down etc.
 - This downloads data from tables on the logger and saves to a daily csv file.
 - The files are made in the directory specified in the config file, under ``logger_csv_path``, in a directory named after the table e.g. ``<chosen-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv``. 
-- Can be used in conjuction with the ``download_data.py`` script.
+- Can be used in conjuction with the ``download_data.py`` script. For example, if the ``download_data.py`` script has stopped working over a period time, the ``download_data_by_date.py`` script can be used to fill in these missing days, and will fill partially complete daily files as well.
 - The datalogger URL must be set in the config file e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port
 - The start and end dates of the days to download should be provided on the command line. A start date is required but an end date is not. If an end date is not provided, data is downloaded only for the day provided as the start date.
 - If a file for a day has partial data, this script will download the rest of the data for that day, following on from the latest entry in that file.
@@ -119,7 +144,7 @@ This next command will download data only for 21/07/2021.
                             The data product to create files for.
 
 
-The start date must always be provided, but an end date is not required. If an end date is not provided, files are only created for the date provided as the start date. An example of usage is:
+A start date is required, but an end date is not. If an end date is not provided, files are only created for the given start date. An example of usage is:
 
 .. code-block:: console
     
@@ -198,4 +223,5 @@ Note that datetimes should be provided in quotations to allow them to be parsed 
 
 
 
-.. _scripts-api: https://ncas-energy-balance-1-software.readthedocs.io/en/latest/scripts-api.html
+.. _api: https://ncas-energy-balance-1-software.readthedocs.io/en/latest/api.html#scripts
+.. _config: https://ncas-energy-balance-1-software.readthedocs.io/en/latest/config.html
