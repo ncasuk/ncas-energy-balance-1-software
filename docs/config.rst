@@ -53,6 +53,8 @@ These settings apply across the scripts::
     logger_csv_path = /Users/qsp95418/AMOF/ncas-energy-balance-1-software
     # where to output netcdf files
     netcdf_path = /Users/qsp95418/AMOF/ncas-energy-balance-1-software
+    # path to output qc csv files
+    qc_csv_path = /Users/qsp95418/AMOF/ncas-energy-balance-1-software
     # masking will include values that have been quality controlled to this level or less (e.g. <= 1)
     qc_flag_level = 1
     # fill value to use in netcdf files

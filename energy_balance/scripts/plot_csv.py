@@ -16,12 +16,12 @@ def arg_parse():
     parser.add_argument('-s', '--start',
                         type=str,
                         required=False,
-                        help="The start date/time for the plot in 'YYYY-MM-dd HH:MM:SS' format. e.g. '2021-07-10 04:00'.")
+                        help="The start date/time for the plot in 'YYYY-MM-dd HH:MM:SS' format. e.g. '2021-07-10 04:00:00'.")
 
     parser.add_argument('-e', '--end',
                         type=str,
                         required=False,
-                        help="The end date/time for the plot in 'YYYY-MM-dd HH:MM:SS' format. e.g. '2021-07-10 16:00'.")
+                        help="The end date/time for the plot in 'YYYY-MM-dd HH:MM:SS' format. e.g. '2021-07-10 16:00:00'.")
 
     parser.add_argument('-fp', '--file-path',
                         type=str,

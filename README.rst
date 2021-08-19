@@ -40,6 +40,12 @@ The package is called ``energy_balance`` and contains the scripts and all you wi
     $ source venv/bin/activate
     $ pip install .
 
+If you would like to be able to edit the scripts, change the final line to
+
+.. code-block:: console
+
+    $ pip install -e .
+
 Creating a virtual environemnt allows you to manage the installation requirements. You will need to activate the virtual environemnt before using the scripts (`source venv/bin/activate`) after opening a new terminal window.
 
 It is likely that you will use a Raspberry Pi to connect to the logger using a Moxa NPort either via TCP/IP or in Real COM mode. Therefore you will run the scripts on the Raspberry Pi.
@@ -62,6 +68,14 @@ The command:
 
 usually works.
 
+You also may encounter problems installing netCDF4 on RaspberryPi. The below steps should be used in the case where you get the error `ValueError: did not find HDF5 headers`.
+
+.. code-block:: console
+    
+    $ pip install wheel
+    $ sudo apt-get install libhdf5-dev
+    $ sudo apt-get install libnetcdf-dev
+    
 
 
 .. _Github repo: https://github.com/ncasuk/ncas-energy-balance-1-software

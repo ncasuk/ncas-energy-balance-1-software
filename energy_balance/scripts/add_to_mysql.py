@@ -91,6 +91,7 @@ def main():
     dir_path = CONFIG['common']['logger_csv_path']
 
     insert_into_tables(user, password, database, dir_path)
+    print('Inserted data into MySQL tables')
 
 if __name__ == '__main__':
     main()
