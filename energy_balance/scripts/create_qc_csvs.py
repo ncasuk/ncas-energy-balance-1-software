@@ -21,19 +21,19 @@ def arg_parse():
     parser.add_argument('-s', '--start-date',
                         type=str,
                         required=True,
-                        help="The start date to create netCDF files for. e.g. '2021-07-30' when creating daily files, '2021-07' when creating monthly files.")
+                        help="The start date to create files for. e.g. '2021-07-30' when creating daily files, '2021-07' when creating monthly files.")
 
     parser.add_argument('-e', '--end-date',
                         type=str,
                         required=False,
-                        help="The end date to create netCDF files for. e.g. '2021-07-30' when creating daily files, '2021-07' when creating monthly files. This is incllusive.")
+                        help="The end date to create files for. e.g. '2021-07-30' when creating daily files, '2021-07' when creating monthly files. This is incllusive.")
     
     parser.add_argument('-f', '--frequency',
                         type=str,
                         required=False,
                         default='monthly',
                         choices=['daily', 'monthly'],
-                        help="The frequency for creating the netCDF files, options are daily or monthly. The default is monthly.")
+                        help="The frequency for creating the csv files, options are daily or monthly. The default is monthly.")
 
     parser.add_argument('-d', '--data-product',
                         type=str,
@@ -41,12 +41,6 @@ def arg_parse():
                         choices=['soil', 'radiation'],
                         help="The data product to create files for.")
     
-    parser.add_argument("-fp",
-                        "--file-path",
-                        type=str,
-                        required=True,
-                        help="Filename of where to write file e.g. /path/to/file.csv")
-
     return parser.parse_args()
 
 def create_soil_files(date, frequency, path):
@@ -77,6 +71,23 @@ def get_create_file(data_product):
         return create_radiation_files
     elif data_product == "soil":
         return create_soil_files
+
+def prepare_date(date, frequency):
+    """
+    Convert datetimes to strings, dependening on frequency.
+    If monthly: format returned will be %Y%m
+    If daily: format returned will be %Y%m%d
+
+    :param date: (datetime.datetime) The date for which the file is being created.
+    :param frequency: (str) The frequency for files - daily or monthly.
+    :returns: (str) The date converted to string format.
+    """
+    if frequency == "monthly":
+        date = date.strftime("%Y%m")
+    else:
+        date = date.strftime("%Y%m%d")
+
+    return date
     
 def create_files(start_date, end_date, frequency, data_product, fpath):
     """
@@ -86,10 +97,14 @@ def create_files(start_date, end_date, frequency, data_product, fpath):
     :param end_date: (datetime.datetime) The end date for which to create the files.
     :param frequency: (str) The frequency for files - daily or monthly.
     :param data_product: (str) The data product to create the csvs for e.g. radiation or soil
-    :param fpath: (str) The filename of where to create the output file.
+    :param fpath: (str) The directory path at which to create the output file.
     :returns: None
     """
     while start_date <= end_date:
+
+        date = prepare_date(start_date, frequency)
+        fname = f"{data_product}_qc_{date}.csv"
+        path = os.path.join(fpath, fname)
 
         if frequency == 'daily':
             delta = relativedelta(days=1)
@@ -98,7 +113,7 @@ def create_files(start_date, end_date, frequency, data_product, fpath):
 
         try:
             func = get_create_file(data_product)
-            func(start_date, frequency, fpath)
+            func(start_date, frequency, path)
         except FileNotFoundError:
             start_date += delta
             continue
@@ -125,7 +140,7 @@ def main():
         end_date = start_date
 
     data_product = args.data_product
-    fpath = args.file_path
+    fpath = os.path.expanduser(CONFIG['common']['qc_csv_path'])
 
     create_files(start_date, end_date, freq, data_product, fpath)
 

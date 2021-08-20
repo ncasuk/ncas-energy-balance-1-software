@@ -29,6 +29,10 @@ def _gather_config_files(package=None):
     if os.path.isfile(sys_config):
         conf_files.append(sys_config)
 
+    CONFIG = "CONFIG"
+    if CONFIG in os.environ:
+        conf_files.extend(os.environ[CONFIG].split(":"))
+
     return conf_files
 
 

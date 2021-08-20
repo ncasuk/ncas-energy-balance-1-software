@@ -73,7 +73,7 @@ class RadiationNetCDF(BaseNetCDF):
 
         # create qc variables
         # swdn
-        attrs = {"long_name": "Data Quality flag: dwonwelling shortwave",
+        attrs = {"long_name": "Data Quality flag: downwelling shortwave",
                  "flag_values": "0b,1b,2b,3b,4b,5b,6b",
                  "flag_meanings": "0: not_used \n1: good data \n2: no_data \n3: bad_data_sw_radiation_<_0 \n4: bad_data_sw_radiation_>_2000_W_m-2 \n5: suspect_data \n6: timestamp_error"}
         self.create_qc_variable("qc_flag_downwelling_shortwave", self.swdn_header, ('time',), **attrs)

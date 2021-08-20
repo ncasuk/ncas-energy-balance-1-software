@@ -24,7 +24,7 @@ class SoilQualityControl(QualityControl):
         Sets self._df and self._qc
         """
         date = self.prepare_date(CONFIG['soil']['input_date_format'])
-        input_file_path = CONFIG['soil']['input_file_path']
+        input_file_path = os.path.expanduser(CONFIG['soil']['input_file_path'])
         
         soil_moisture_file = CONFIG['soil']['soil_moisture_file']
         soil_temperature_file = CONFIG['soil']['soil_temperature_file']

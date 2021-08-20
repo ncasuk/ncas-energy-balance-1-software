@@ -19,12 +19,12 @@ def arg_parse():
     parser.add_argument('-s', '--start-date',
                         type=str,
                         required=True,
-                        help="The start date to extract data for")
+                        help="The start date to extract data for, in the format YYYY-MM-DD.")
 
     parser.add_argument('-e', '--end-date',
                         type=str,
                         required=False,
-                        help="The end date to extract data for")
+                        help="The end date to extract data for, in the format YYYY-MM-DD.")
                         
     return parser.parse_args()
 
@@ -107,13 +107,16 @@ def main():
     # if no end date, make it the same as the start date, then data will be downloaded for one day only
     if args.end_date:
         end_date = datetime.strptime(args.end_date, "%Y-%m-%d")
+        complete_stmnt = f'Data downloaded for range {args.start_date} {args.end_date}'
     else:
         end_date = start_date
+        complete_stmnt = f'Data downloaded for {args.start_date}'
 
     url = CONFIG['common']['logger_url']
-    dir_path = CONFIG['common']['logger_csv_path']
+    dir_path = os.path.expanduser(CONFIG['common']['logger_csv_path'])
 
     get_data(url, start_date, end_date, dir_path)
+    print(complete_stmnt)
 
 if __name__ == '__main__':
     main()
