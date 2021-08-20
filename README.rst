@@ -76,11 +76,16 @@ The command:
 
 usually works.
 
-You also may encounter problems installing netCDF4 on RaspberryPi. The below steps should be used in the case where you get the error ``ValueError: did not find HDF5 headers``.
+If you get the error ``error: invalid command 'bdist_wheel'``, run the below command.
 
 .. code-block:: console
     
     $ pip install wheel
+
+You also may encounter problems installing netCDF4 on RaspberryPi. The below steps should be used in the case where you get the error ``ValueError: did not find HDF5 headers``.
+
+.. code-block:: console
+    
     $ sudo apt-get install libhdf5-dev
     $ sudo apt-get install libnetcdf-dev
     
