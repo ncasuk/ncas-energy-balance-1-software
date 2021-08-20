@@ -113,7 +113,7 @@ def main():
         complete_stmnt = f'Data downloaded for {args.start_date}'
 
     url = CONFIG['common']['logger_url']
-    dir_path = CONFIG['common']['logger_csv_path']
+    dir_path = os.path.expanduser(CONFIG['common']['logger_csv_path'])
 
     get_data(url, start_date, end_date, dir_path)
     print(complete_stmnt)

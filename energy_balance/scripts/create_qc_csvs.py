@@ -140,7 +140,7 @@ def main():
         end_date = start_date
 
     data_product = args.data_product
-    fpath = CONFIG['common']['qc_csv_path']
+    fpath = os.path.expanduser(CONFIG['common']['qc_csv_path'])
 
     create_files(start_date, end_date, freq, data_product, fpath)
 

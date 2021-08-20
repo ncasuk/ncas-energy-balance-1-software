@@ -82,7 +82,7 @@ def get_todays_data(url, table, csv_path):
 
 def main():
     url = CONFIG['common']['logger_url']
-    dir_path = CONFIG['common']['logger_csv_path']
+    dir_path = os.path.expanduser(CONFIG['common']['logger_csv_path'])
 
     log(url, dir_path)
 

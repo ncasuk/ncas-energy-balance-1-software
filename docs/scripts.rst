@@ -7,7 +7,7 @@ Scripts
 The scripts make use of the package PyCampbellCR1000 (on an updated fork) - this works for CR3000 loggers as well.
 The documentation for this package can be found here: https://pycampbellcr1000.readthedocs.io/en/latest/
 
-To see the API and source code, go to `api`_.
+To see the API and source code for these scripts, go to `api`_.
 
 Various settings used in these scripts can be set/changed in the config file: ncas-energy-balance-1-software/energy_balance/etc/config.ini.
 This includes input/output file paths and settings for netcdf global attributes.
@@ -21,20 +21,20 @@ This is explained on the `config_` page.
 
         $ export CONFIG='path/to/my/config.ini' 
 
-Use the ``-h`` option on any script to see the command line arguments available.
-
 .. note::
     To find your datalogger URL you must know:
-    - Whether are you connecting via tcp/ip or serial
-    - If tcp/ip, you need the ip and the port you are connecting to. (URL = 'tcp:host-ip:port')
-    - If serial, you need the path to the port and the baud rate of the port. (URL = 'serial:path:baudrate') 
-    - For serial connections, You can also provide the byte size, parity and stop bits if required, this is assumed to be '8N1' if not provided. (e.g. 'serial:/dev/ttyUSB0:115200:8N1') 
+        - Whether are you connecting via tcp/ip or serial
+        - If tcp/ip, you need the ip and the port you are connecting to. (URL = 'tcp:host-ip:port')
+        - If serial, you need the path to the port and the baud rate of the port. (URL = 'serial:path:baudrate') 
+        - For serial connections, You can also provide the byte size, parity and stop bits if required, this is assumed to be '8N1' if not provided. (e.g. 'serial:/dev/ttyUSB0:115200:8N1') 
+
+Use the ``-h`` option on any script to see the command line arguments available.
   
 **1. download_data.py:**
 
 - Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file. Doing this provides a stream of data and saving as daily files allows netCDF files to easily be created. 
 - The script does not take any command line arguments.
-- The files are made in the directory specified in the config file, under ``logger_csv_path``, in a directory named after the table e.g. ``<chosen-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv``
+- The files are made in the directory specified in the config file, under ``logger_csv_path``, under another directory named after the table e.g. ``<logger_csv_path>/SoilMoisture/SoilMoisture_2021-07-21.csv``
 - The datalogger URL must be set in the config file e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port (see above note explaining this.)
 - Edit ``logger_tables`` in the config file to change the tables downloaded. The default tables are Housekeeping, GPS_datetime, SoilTemperature, SoilMoisture, SoilHeatFlux and Radiation, these are AMOF specific.
 
@@ -47,6 +47,7 @@ To run once:
 
 This will produce an output if successful, example given below, showing how many records were found (repeated for each table):
 ::
+    
     Your download is starting.
     Packet 0 with 13 records
     Packet 1 with 14 records
@@ -84,7 +85,7 @@ will list cron jobs you have set up.
 - Intended to be used to bulk download data over a range of days. 
 - Useful if system has been turned off/ was down etc.
 - This downloads data from tables on the logger and saves to a daily csv file.
-- The files are made in the directory specified in the config file, under ``logger_csv_path``, in a directory named after the table e.g. ``<chosen-directory>/SoilMoisture/SoilMoisture_2021-07-21.csv``. 
+- The files are made in the directory specified in the config file, under ``logger_csv_path``, under another directory named after the table e.g. ``<logger_csv_path>/SoilMoisture/SoilMoisture_2021-07-21.csv``
 - Can be used in conjunction with the ``download_data.py`` script. For example, if the ``download_data.py`` script has stopped working over a period time, the ``download_data_by_date.py`` script can be used to fill in these missing days, and will fill partially complete daily files as well.
 - The datalogger URL must be set in the config file e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port
 - The start and end dates of the days to download should be provided on the command line (in the format YYYY-MM-DD). A start date is required but an end date is not. If an end date is not provided, data is downloaded only for the day provided as the start date.
@@ -112,9 +113,9 @@ You will see a statement saying ``Data downloaded for ...`` once this is complet
 
 **3. add_to_mysql.py:**
 
-- This script will load the csv data for today's files, created by the `download_data` script, into MySQL tables, providing the tables have already been created in the database. For information on creating tables in MySQL, see https://dev.mysql.com/doc/refman/8.0/en/creating-tables.html 
+- This script will load the csv data for today's files, created by the ``download_data`` script, into MySQL tables, providing the tables have already been created in the database. For information on creating tables in MySQL, see https://dev.mysql.com/doc/refman/8.0/en/creating-tables.html 
 - These updating tables could then be used as a source for visualizing the data, for example with Grafana. This would mean the plots could be kept up to date and allow you to see the data in real time.
-- This could be set up as cron job along with the `download_data` script, to keep the tables up to date. See explanation below.
+- This could be set up as cron job along with the ``download_data`` script, to keep the tables up to date. See explanation below.
 - Edit ``logger_tables`` and ``mysql_tables`` in the config file to change the table names to those of your table names from the logger and the corresponding tables you have created in MySQL. 
 - The default values used for the MySQL tables are housekeeping, gps, soil_temp, soil_moisture, soil_heat_flux and radiation. The defaults used for the logger tables are Housekeeping, GPS_datetime, SoilTemperature, SoilMoisture, SoilHeatFlux and Radiation.
 - The top level directory containing the csv files is taken from the config file (under ``logger_csv_path``), assumed to be the same as that used to create the files. (i.e. the same as that used for the ``download_data.py`` script)
@@ -127,7 +128,9 @@ You will see a statement saying ``Data downloaded for ...`` once this is complet
 
 This will output ``Inserted data into MySQL tables`` if successful.
 
-Setting up as a cron job: If the download data script is set up every 5 minutes, this script could be set up to run on a 5 minute interval but 3 minutes after the download data script.
+Setting up as a cron job:
+
+If the download data script is set up every 5 minutes, this script could be set up to run on a 5 minute interval but 3 minutes after the download data script.
 The jobs in the crontab file would like this:
 
 .. code-block::
@@ -135,7 +138,7 @@ The jobs in the crontab file would like this:
     */5 * * * * . /home/pi/ncas-energy-balance-1-software/venv/bin/activate && /home/pi/ncas-energy-balance-1-software/energy_balance/scripts/download_data.py >> /home/pi/campbell_data/data-download-cron.log 2>&1
     3-59/5 * * * * . /home/pi/ncas-energy-balance-1-software/venv/bin/activate && /home/pi/campbell_data/mysql_insert/add_to_mysql.py -u<username> -p<password> -d<database-name> >> /home/pi/campbell_data/cron_output/mysql-cron.log 2>&1 
 
-For extra security, the username and password for the database could be passed in from a text file, preventing them appearing in any logs. This can be done by using the path to the script as below:
+For extra security, the username and password for the database could be passed in from a text file, preventing them appearing in any logs. This can be done by using the path to the text file as below:
 
 .. code-block::
 
@@ -148,11 +151,12 @@ The mySQL script would run at 00:03, 00:08, 00:13 and every 5 minutes after.
 
 **4. create_files.py:**
 
-- This script can be used to make netCDF files, that conform to the NCAS-GENERAL Data Standard, for soil and radiation data products.
+- This script can be used to make netCDF files, that conform to the NCAS-GENERAL Data Standard, for soil and radiation data products. Quality control is carried out during this step, and quality control variables are included in the netCDF file.
+- Further details of the values used for quality control by these scripts can be found at: `qc_`
 - Information on how the netCDF file should be built can be found at https://sites.google.com/ncas.ac.uk/ncasobservations/home/data-project/ncas-data-standards/ncas-amof/. Example files can also be found here.
 - For this to work, ensure settings in the config file are filled in correctly, e.g. column names, input files, input date format
-- Some of the quality control settings can be adjusted in the config file. e.g. the max/min temperature expected for Soil Temperature and the lower and upper bounds for the cleaning time of the radiation sensors.
-- It takes some command line arguments to specify options for the creation of the files.
+- Some of the quality control settings can be adjusted in the config file. e.g. the max/min temperature expected for Soil Temperature and the lower and upper bounds for the cleaning time of the radiation sensors. It would be sensible to discuss these settings with the instrument scientist.
+- The script takes some command line arguments to specify options for the creation of the files.
 - The files are created at the ``netcdf_path`` specified in the config file.
 
 :: 
@@ -202,7 +206,7 @@ To create daily netCDF files for each day between 20th July 2021 and 27th July 2
 .. code-block:: console
     
     $ cd energy_balance/scripts
-    $ python create_files.py -s 2021-07-20 -e 2021-07-27 -f monthly -d radiation
+    $ python create_files.py -s 2021-07-20 -e 2021-07-27 -f daily -d radiation
 
 A file would be created for each day, e.g. for 20th July 2021: ``ncas-energy-balance-1_<platform>_20210720_radiation_v<version>.nc``, where platform and version are set in the config file.
 
@@ -210,14 +214,15 @@ A file would be created for each day, e.g. for 20th July 2021: ``ncas-energy-bal
 **5. create_qc_csvs.py:**
 
 - This script will generate csvs for soil/radiation data that have been quality controlled according the level of quality control specified in the config file. These can then be plotted to see how changing the quality control changes the plot.
-- Only columns used to as variables in the netCDF files will be included. In the soil files: soil temperature, soil water potential, soil heat flux. In the radiation files: downwelling longwave radiation in air, upwelling longwave radiation in air, downwelling shortwave radiation in air, upwelling shortwave radiation in air and radiometer body temperature.
+- Only columns used as variables in the netCDF files will be included. In the soil files these are: soil temperature, soil water potential, soil heat flux. In the radiation files: downwelling longwave radiation in air, upwelling longwave radiation in air, downwelling shortwave radiation in air, upwelling shortwave radiation in air and radiometer body temperature.
 - The name of the file created will be ``<data_product>_qc_<date>.csv`` e.g. ``soil_qc_20210730.csv``. 
 - The files are made in the directory specified in the config file, under ``qc_csv_path``.
-- The quality control flags data outside operational bounds, suspect data and data taken when sensors are being cleaned. To do this a quality control matrix is created, assigning each value a quality control flag. These are numbers from 0 to 255.
-  - 0 is not used.
-  - 1 means the data is 'good' i.e. it is within operational and expected bounds and hasn't raised any suspicion.
-  - further values 2, 3, 4 etc. are assigned specific definitions e.g. 2 could mean the data is outside the operational bounds, 3 could mean there is a timestamp error.
-  - Further details of the values used for quality control by these scripts can be found at: `qc_`
+- The quality control carried out flags data outside operational bounds, suspect data and data taken when sensors are being cleaned. To do this a quality control matrix is created, assigning each value a quality control flag. These are numbers from 0 to 255.
+  
+    - 0 is not used.
+    - 1 means the data is 'good' i.e. it is within operational and expected bounds and hasn't raised any suspicion.
+    - Further values 2, 3, 4 etc. are assigned specific definitions e.g. 2 could mean the data is outside the operational bounds, 3 could mean there is a timestamp error.
+    - Further details of the values used for quality control by these scripts can be found at: `qc_`
 - Setting the level as 1, means only 'good' data is provided. This can be increased to include data from other qc flags, as described by the variables in the NetCDF files. (The level chosen will include data from that level and below.)
 - Some of the quality control settings can be adjusted in the config file. e.g. the max/min temperature expected for Soil Temperature and the lower and upper bounds for the cleaning time of the radiation sensors. It would be sensible to discuss these settings with the instrument scientist.
 - These csvs can be plotted using script #6 below.
@@ -275,10 +280,10 @@ The 2 soil water potential values (column WP_kPa_1) over 80kPa hav been masked o
 
 **6. plot_csv.py:**
 
-- This script can be used to generate plots from csv files, provided the file contains a date/time column, using matplotlib. It will plot the csv columns you specify against datetime.
+- This script can be used to generate quick plots from csv files, provided the file contains a date/time column, using matplotlib. It will plot the csv columns you specify against datetime.
+- The name of the datetime column must be specified in the config file, under ``datetime_header``.
 - This will allow you take a quick look at any data, and could be used to look at how the plot changes when data is masked from the quality control.
 - The command line options allow you to specify the datetimes to plot between and which columns of the csv to plot.
-- The name of the datetime column must be specified in the config file.
 - If a start and/or end date are not provided, these will default to the start/end times in the csv.
 
 :: 

@@ -50,16 +50,16 @@ These settings apply across the scripts::
     # name of date/time column in files/on logger
     datetime_header = Datetime
     # path to output/read logger csv files from
-    logger_csv_path = /Users/qsp95418/AMOF/ncas-energy-balance-1-software
+    logger_csv_path = ~/ncas-energy-balance-1-software
     # where to output netcdf files
-    netcdf_path = /Users/qsp95418/AMOF/ncas-energy-balance-1-software
+    netcdf_path = ~/ncas-energy-balance-1-software
     # path to output qc csv files
-    qc_csv_path = /Users/qsp95418/AMOF/ncas-energy-balance-1-software
+    qc_csv_path = ~/ncas-energy-balance-1-software
     # masking will include values that have been quality controlled to this level or less (e.g. <= 1)
     qc_flag_level = 1
     # fill value to use in netcdf files
     fill_value = -1e+20
-    # names of the tables in the logger to process in scripts
+    # names of the data tables in the logger to process in scripts
     logger_tables = Housekeeping GPS_datetime SoilTemperature SoilMoisture SoilHeatFlux Radiation
     # names of the tables you have created in mysql (must map to logger tables)
     mysql_tables = housekeeping gps soil_temp soil_moisture soil_heat_flux radiation
@@ -71,7 +71,7 @@ These settings are specific for the soil data product::
     # number of sensors
     index_length = 3
     # input file path to directory containing soil csv files to turn into netcdf files
-    input_file_path = /Users/qsp95418/AMOF/
+    input_file_path = ~/ncas-energy-balance-1-software
     # double % to escape as it is a special character
     # date format as it is on the input files
     input_date_format = %%Y-%%m-%%d
@@ -92,7 +92,7 @@ These settings are specific for the radiation data product::
 
     [radiation]
     # input file path to directory containing radiation csv files to turn into netcdf files
-    input_file_path = /Users/qsp95418/AMOF/
+    input_file_path = ~/ncas-energy-balance-1-software
     # double % to escape as it is a special character
     # date format as it is on the input files
     input_date_format = %%Y-%%m-%%d
@@ -122,7 +122,6 @@ These settings correspond to the global attributes on the netCDF files produced.
     source = NCAS Energy Balance Station unit 1
     instrument_manufacturer = Campbell Scientific
     instrument_model = CR3000
-    # fixed but don't have at the moment
     instrument_serial_number = 
     instrument_software = EB1_logger.cr5
     instrument_software_version = v1

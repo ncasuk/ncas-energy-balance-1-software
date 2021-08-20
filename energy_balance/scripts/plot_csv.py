@@ -87,7 +87,7 @@ def main():
     if end:
         end = validate_time(end)
 
-    fpath = args.file_path
+    fpath = os.path.expanduser(args.file_path)
     columns = args.columns.strip(' ').split(',')
 
     plot(start, end, columns, fpath)

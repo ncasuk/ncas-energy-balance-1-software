@@ -32,7 +32,7 @@ class RadiationQualityControl(QualityControl):
         radiation_file = CONFIG['radiation']['radiation_file']
 
         try:
-            df_radiation = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.join(input_file_path, radiation_file.format(date=date)))],ignore_index=True)
+            df_radiation = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.expanduser(os.path.join(input_file_path, radiation_file.format(date=date))))],ignore_index=True)
         except ValueError:
             print(f"No files found for {date}, skipping")
             raise FileNotFoundError

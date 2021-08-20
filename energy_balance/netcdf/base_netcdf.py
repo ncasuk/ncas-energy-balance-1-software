@@ -41,7 +41,7 @@ class BaseNetCDF:
 
         output_file_name = f"ncas-energy-balance-1_{CONFIG['global']['platform']}_{date}_{self.data_product}_v{CONFIG['global']['product_version']}.nc"
         output_path = CONFIG['common']['netcdf_path']
-        output_file = os.path.join(output_path, output_file_name)
+        output_file = os.path.expanduser(os.path.join(output_path, output_file_name))
 
         self.dataset = Dataset(output_file, "w", format='NETCDF4_CLASSIC')
         self.create_netcdf()
