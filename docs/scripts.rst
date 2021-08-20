@@ -11,7 +11,7 @@ To see the API and source code for these scripts, go to `api`_.
 
 Various settings used in these scripts can be set/changed in the config file: ncas-energy-balance-1-software/energy_balance/etc/config.ini.
 This includes input/output file paths and settings for netcdf global attributes.
-This is explained on the `config_` page.
+This is explained on the `config`_ page.
 
 .. note::
     To change the default config settings, provide your own config file by setting the environment variable CONFIG as the file path to your file.
@@ -152,7 +152,7 @@ The mySQL script would run at 00:03, 00:08, 00:13 and every 5 minutes after.
 **4. create_files.py:**
 
 - This script can be used to make netCDF files, that conform to the NCAS-GENERAL Data Standard, for soil and radiation data products. Quality control is carried out during this step, and quality control variables are included in the netCDF file.
-- Further details of the values used for quality control by these scripts can be found at: `qc_`
+- Further details of the values used for quality control by these scripts can be found at: `qc`_
 - Information on how the netCDF file should be built can be found at https://sites.google.com/ncas.ac.uk/ncasobservations/home/data-project/ncas-data-standards/ncas-amof/. Example files can also be found here.
 - For this to work, ensure settings in the config file are filled in correctly, e.g. column names, input files, input date format
 - Some of the quality control settings can be adjusted in the config file. e.g. the max/min temperature expected for Soil Temperature and the lower and upper bounds for the cleaning time of the radiation sensors. It would be sensible to discuss these settings with the instrument scientist.
@@ -222,7 +222,7 @@ A file would be created for each day, e.g. for 20th July 2021: ``ncas-energy-bal
     - 0 is not used.
     - 1 means the data is 'good' i.e. it is within operational and expected bounds and hasn't raised any suspicion.
     - Further values 2, 3, 4 etc. are assigned specific definitions e.g. 2 could mean the data is outside the operational bounds, 3 could mean there is a timestamp error.
-    - Further details of the values used for quality control by these scripts can be found at: `qc_`
+    - Further details of the values used for quality control by these scripts can be found at: `qc`_
 - Setting the level as 1, means only 'good' data is provided. This can be increased to include data from other qc flags, as described by the variables in the NetCDF files. (The level chosen will include data from that level and below.)
 - Some of the quality control settings can be adjusted in the config file. e.g. the max/min temperature expected for Soil Temperature and the lower and upper bounds for the cleaning time of the radiation sensors. It would be sensible to discuss these settings with the instrument scientist.
 - These csvs can be plotted using script #6 below.
