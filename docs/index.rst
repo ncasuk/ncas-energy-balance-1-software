@@ -20,6 +20,14 @@ There are various components as explained briefly below:
 
  With this software, the process of collecting data, applying quality control, plotting and creating netCDF files should be much more straightforward.
 
+Below, images of the sensors in use:
+
+.. image:: _static/sensors.jpg
+  :width: 400
+
+.. image:: _static/sensors_2.jpg
+  :width: 400
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:

@@ -65,5 +65,5 @@ class SoilQualityControl(QualityControl):
         # soil water potential
         for col in self.soil_moisture_headers:
             swp_conditions = [np.isnan(self._df[col]), self._df[col] > 80, self._df[col] > 200, self._df[col] < 0]
-            swp_choices = [2, 2, 3, 3]
+            swp_choices = [3, 2, 3, 3]
             self.apply_qc(swp_conditions, swp_choices, col)
