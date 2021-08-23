@@ -8,6 +8,7 @@ __contact__ = 'eleanor.smith@stfc.ac.uk'
 import os
 import subprocess
 import pandas as pd
+import ntplib
 from datetime import datetime, date
 from pycampbellcr1000 import CR1000
 from energy_balance import CONFIG
@@ -24,6 +25,17 @@ def log(url, dir_path):
     :returns: None
     """
     device = CR1000.from_url(url)
+
+    # first check if it's midnight (utc) & sync time 
+    try:
+        c = ntplib.NTPClient()
+        start_time = datetime.utcfromtimestamp(c.request('pool.ntp.org').tx_time)
+
+        if start_time.hour == "0" and start_time.minute == "0":
+            device.set_time(datetime.utcfromtimestamp(c.request('pool.ntp.org').tx_time))
+            
+    except:
+        print("Could not sync with time server.")
 
     # device.list_tables():
     # ['Status', 'Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation', 'DataTableInfo', 'Public']

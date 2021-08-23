@@ -33,6 +33,7 @@ Use the ``-h`` option on any script to see the command line arguments available.
 **1. download_data.py:**
 
 - Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file. Doing this provides a stream of data and saving as daily files allows netCDF files to easily be created. 
+- The script updates the time of the logger at midnight, to prevent the logger time drifting. So if set up to run every 5 minutes, the logger clock will be reset daily.
 - The script does not take any command line arguments.
 - The files are made in the directory specified in the config file, under ``logger_csv_path``, under another directory named after the table e.g. ``<logger_csv_path>/SoilMoisture/SoilMoisture_2021-07-21.csv``
 - The datalogger URL must be set in the config file e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port (see above note explaining this.)
