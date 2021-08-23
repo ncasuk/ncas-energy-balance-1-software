@@ -119,5 +119,5 @@ For the radiation data product, 6 quality control variables are created.
     * flag 2 is applied automatically, all other data is marked as 1. This flag is applied to all variables, as they are all affected when the sensor is being cleaned.
 
 * The script to create netCDF files or that which makes the qc csvs, automatically applies flags as mentioned under each variable. Any other flags are there to be added manually after inspection of the data.
-* Manually adding flags may result in the valid max/min values of variables needing to be changed - these are calculated only from 'good data'.
+* Manually adding flags may result in the valid max/min values of variables needing to be changed in the netCDF file - these are calculated only from 'good data'. There is a script available to recalculate these values. (Script 5 - calculate_valid_min_max.py)
 * Suspect data has been included to cover other scenarios not covered by the other flags e.g. data is higher/lower than expected, the data has changed significantly since the last reading.

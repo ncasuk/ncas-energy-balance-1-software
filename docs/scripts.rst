@@ -153,6 +153,7 @@ The mySQL script would run at 00:03, 00:08, 00:13 and every 5 minutes after.
 
 - This script can be used to make netCDF files, that conform to the NCAS-GENERAL Data Standard, for soil and radiation data products. Quality control is carried out during this step, and quality control variables are included in the netCDF file.
 - Further details of the values used for quality control by these scripts can be found at: `qc`_
+- The quality control level used to calculate valid min/max values is the value set in the config file under ``qc_flag_level``.
 - Information on how the netCDF file should be built can be found at https://sites.google.com/ncas.ac.uk/ncasobservations/home/data-project/ncas-data-standards/ncas-amof/. Example files can also be found here.
 - For this to work, ensure settings in the config file are filled in correctly, e.g. column names, input files, input date format
 - Some of the quality control settings can be adjusted in the config file. e.g. the max/min temperature expected for Soil Temperature and the lower and upper bounds for the cleaning time of the radiation sensors. It would be sensible to discuss these settings with the instrument scientist.
@@ -210,10 +211,43 @@ To create daily netCDF files for each day between 20th July 2021 and 27th July 2
 
 A file would be created for each day, e.g. for 20th July 2021: ``ncas-energy-balance-1_<platform>_20210720_radiation_v<version>.nc``, where platform and version are set in the config file.
 
+**5. calculate_valid_min_max.py:**
 
-**5. create_qc_csvs.py:**
+- This script allows you to recalculate the valid min/max variables after manually changing the values of a quality control flag variable.
+- For example, the qc flag variable for ``soil_temperature`` is ``qc_flag_soil_temperature``. If values of the qc flag variable are changed, it may change the valid minimum/maximum.
+- The quality control level used remains the value set in the config file under ``qc_flag_level``.
+- To update the valid max/min values, use this script as below:
+
+.. code-block:: console
+    
+        $ cd energy_balance/scripts
+        $ python calculate_valid_min_max.py -v soil_temperature -qc qc_flag_soil_temperature -fp /path/to/ncas-energy-balance-1_lab_20210730_soil_v0.1.nc
+
+Once complete, you will see a message, e.g. ``Recalculated valid min and valid max for soil_temperature, using qc_flag_soil_temperature as a mask, with qc flag value of 1``
+
+In general, the usage is:
+
+::
+
+    usage: calculate_valid_min_max.py [-h] [-v VAR_NAME] [-qc QC_VAR_NAME] -fp FILE_PATH
+
+    optional arguments:
+        -h, --help              show this help message and exit
+        -v VAR_NAME, --var-name VAR_NAME
+                                The name of the variable to update the min/max on.
+                                e.g. 'soil_temperature'
+        -qc QC_VAR_NAME, --qc-var-name QC_VAR_NAME
+                                The name of the quality control variable to use as a
+                                mask for retrieving valid values. e.g.
+                                'qc_flag_soil_temperature'
+        -fp FILE_PATH, --file-path FILE_PATH
+                                The path to netCDF file on which to recalculate the
+                                min/max e.g. /path/to/my/file.nc
+
+**6. create_qc_csvs.py:**
 
 - This script will generate csvs for soil/radiation data that have been quality controlled according the level of quality control specified in the config file. These can then be plotted to see how changing the quality control changes the plot.
+- This will only apply automatic quality control as discussed in `qc`_ and will not take into account any manual changes done on the netCDF file.
 - Only columns used as variables in the netCDF files will be included. In the soil files these are: soil temperature, soil water potential, soil heat flux. In the radiation files: downwelling longwave radiation in air, upwelling longwave radiation in air, downwelling shortwave radiation in air, upwelling shortwave radiation in air and radiometer body temperature.
 - The name of the file created will be ``<data_product>_qc_<date>.csv`` e.g. ``soil_qc_20210730.csv``. 
 - The files are made in the directory specified in the config file, under ``qc_csv_path``.
@@ -223,7 +257,8 @@ A file would be created for each day, e.g. for 20th July 2021: ``ncas-energy-bal
     - 1 means the data is 'good' i.e. it is within operational and expected bounds and hasn't raised any suspicion.
     - Further values 2, 3, 4 etc. are assigned specific definitions e.g. 2 could mean the data is outside the operational bounds, 3 could mean there is a timestamp error.
     - Further details of the values used for quality control by these scripts can be found at: `qc`_
-- Setting the level as 1, means only 'good' data is provided. This can be increased to include data from other qc flags, as described by the variables in the NetCDF files. (The level chosen will include data from that level and below.)
+
+- The flag level to use can be set in the config file under ``qc_flag_level``. Setting the level as 1, means only 'good' data is provided. This can be increased to include data from other qc flags, as described by the variables in the NetCDF files. (The level chosen will include data from that level and below.)
 - Some of the quality control settings can be adjusted in the config file. e.g. the max/min temperature expected for Soil Temperature and the lower and upper bounds for the cleaning time of the radiation sensors. It would be sensible to discuss these settings with the instrument scientist.
 - These csvs can be plotted using script #6 below.
 
@@ -278,7 +313,7 @@ AFTER:
 
 The 2 soil water potential values (column WP_kPa_1) over 80kPa hav been masked out, as this is one of the quality control settings.
 
-**6. plot_csv.py:**
+**7. plot_csv.py:**
 
 - This script can be used to generate quick plots from csv files, provided the file contains a date/time column, using matplotlib. It will plot the csv columns you specify against datetime.
 - The name of the datetime column must be specified in the config file, under ``datetime_header``.

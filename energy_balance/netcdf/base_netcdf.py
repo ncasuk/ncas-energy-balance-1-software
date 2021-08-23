@@ -20,7 +20,7 @@ class BaseNetCDF:
     Constant values are taken from the config file, excluding 'headers' and 'data_product' which must be set in each specific implementation.
 
     :param df: A pandas dataframe containing all columns required to create the netCDF file.
-    :param qc: A pandas dataframe with the same columns as df, but containg the quality control values instead. (i.e. 1, 2, 3 etc.)
+    :param qc: A pandas dataframe with the same columns as df, but containing the quality control values instead. (i.e. 1, 2, 3 etc.)
     :param date: (datetime.datetime) The date to create the netCDF file for. If frequency is monthly, only the year and month will be taken into account.
     :param frequency: (str) 'daily' or 'monthly'. Determines whether the file will use data from one day or for one month.
     """
@@ -48,6 +48,7 @@ class BaseNetCDF:
         self.dataset.close()
 
         print(f"Dataset created at {output_file}")
+
 
     def convert_date_to_string(self, date, frequency):
         """
