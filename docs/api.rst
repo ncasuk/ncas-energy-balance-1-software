@@ -6,37 +6,43 @@ API
 Scripts
 =======
 
-**1. download_data:**
+**1. download_data.py:**
 
 .. automodule:: energy_balance.scripts.download_data
     :noindex:
     :members:
 
-**2. download_data_by_date:**
+**2. download_data_by_date.py:**
 
 .. automodule:: energy_balance.scripts.download_data_by_date
     :noindex:
     :members:
 
-**3. add_to_mysql:**
+**3. add_to_mysql.py:**
 
 .. automodule:: energy_balance.scripts.add_to_mysql
     :noindex:
     :members:
 
-**4. create_files:**
+**4. create_files.py:**
 
 .. automodule:: energy_balance.scripts.create_files
     :noindex:
     :members:
 
-**5. create_qc_csvs.py:**
+**5. calculate_valid_min_max.py:**
+
+.. automodule:: energy_balance.scripts.calculate_valid_min_max
+    :noindex:
+    :members:
+
+**6. create_qc_csvs.py:**
 
 .. automodule:: energy_balance.scripts.create_qc_csvs
     :noindex:
     :members:
 
-**5. plot_csv.py:**
+**7. plot_csv.py:**
 
 .. automodule:: energy_balance.scripts.plot_csv
     :noindex:
