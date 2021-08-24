@@ -52,7 +52,7 @@ The package is called ``energy_balance`` and contains the scripts and all you wi
 
 .. code-block:: console
 
-    $ python -m venv venv
+    $ python3 -m venv venv
     $ source venv/bin/activate
     $ pip install .
 
