@@ -33,7 +33,7 @@ Use the ``-h`` option on any script to see the command line arguments available.
 **1. download_data.py:**
 
 - Created to be set up as a cron job every 5 minutes (or another time interval). This downloads data from tables on the logger and saves to a daily csv file. Doing this provides a stream of data and saving as daily files allows netCDF files to easily be created. 
-- The script does not take any command line arguments.
+- If the command line argument ``-t`` is present, the script will update the logger time at midnight, to prevent the logger time drifting. So if set up to run on an interval with a cron job (that will run at midnight), the logger clock will be reset daily.
 - The files are made in the directory specified in the config file, under ``logger_csv_path``, under another directory named after the table e.g. ``<logger_csv_path>/SoilMoisture/SoilMoisture_2021-07-21.csv``
 - The datalogger URL must be set in the config file e.g. serial:/dev/ttyUSB0:115200 or tcp:host-ip:port (see above note explaining this.)
 - Edit ``logger_tables`` in the config file to change the tables downloaded. The default tables are Housekeeping, GPS_datetime, SoilTemperature, SoilMoisture, SoilHeatFlux and Radiation, these are AMOF specific.
@@ -78,6 +78,8 @@ The command:
     $ crontab -l
 
 will list cron jobs you have set up.
+
+By using ``download_data.py -t``, instead of just ``download_data.py``, the logger time will be updated at midnight.
 
 
 **2. download_data_by_date.py:**

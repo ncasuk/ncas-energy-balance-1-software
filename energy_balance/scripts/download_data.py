@@ -8,22 +8,52 @@ __contact__ = 'eleanor.smith@stfc.ac.uk'
 import os
 import subprocess
 import pandas as pd
+import ntplib
+import argparse
 from datetime import datetime, date
 from pycampbellcr1000 import CR1000
 from energy_balance import CONFIG
 
 
-def log(url, dir_path):
+def arg_parse():
+    
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "-t",
+        "--set-time",
+        action="store_true",
+        help=f"If set then the logger time will be updated when the script runs at midnight. If not specified, set_time=False."
+    )
+                        
+    return parser.parse_args()
+
+
+def log(url, dir_path, set_time=False):
     """
     Extract the data from the campbell data logger for each specified table and save to a daily csv file.
     This will backfill the file to get all data from the start of the day or update from the latest data entry if data already exists in the file.
     Default tables are: Housekeeping, GPS_datetime, SoilTemperature, SoilMoisture, SoilHeatFlux and Radiation
+    If set_time=True the logger time will be updated when the script runs at midnight. Default is False.
     
     :param url: (str) URL for connection with logger in format 'tcp:iphost:port' or 'serial:/dev/ttyUSB0:19200:8N1'
     :param dir_path: (str) The path to the top level directory in which to create the csv files and folders.
+    :param set_time: (boolean) If True, the logger time will be updated when the script runs at midnight. Default is False.
     :returns: None
     """
     device = CR1000.from_url(url)
+
+    # first check if it's midnight (utc) & sync time, if set_time=True
+    if set_time:
+        try:
+            c = ntplib.NTPClient()
+            start_time = datetime.utcfromtimestamp(c.request('pool.ntp.org').tx_time)
+
+            if start_time.hour == "0" and start_time.minute == "0":
+                device.set_time(datetime.utcfromtimestamp(c.request('pool.ntp.org').tx_time))
+                
+        except:
+            print("Could not sync with time server.")
 
     # device.list_tables():
     # ['Status', 'Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation', 'DataTableInfo', 'Public']
@@ -81,10 +111,13 @@ def get_todays_data(url, table, csv_path):
 
 
 def main():
+    args = arg_parse()
+    set_time = args.set_time
+
     url = CONFIG['common']['logger_url']
     dir_path = os.path.expanduser(CONFIG['common']['logger_csv_path'])
 
-    log(url, dir_path)
+    log(url, dir_path, set_time)
 
 if __name__ == '__main__':
     main()
