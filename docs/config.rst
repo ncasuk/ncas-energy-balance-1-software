@@ -75,10 +75,11 @@ These settings are specific for the soil data product::
     # double % to escape as it is a special character
     # date format as it is on the input files
     input_date_format = %%Y-%%m-%%d
-    # format of files - use {date} where the date exists in the file name
-    soil_moisture_file = SoilMoisture_{date}.csv
-    soil_temperature_file = SoilTemperature_{date}.csv
-    soil_heat_flux_file = SoilHeatFlux_{date}.csv
+    # location and format of files - use {date} where the date exists in the file name
+    # if files are found in directories under the main 'input file path directory', include that here
+    soil_moisture_file = SoilMoisture/SoilMoisture_{date}.csv
+    soil_temperature_file = SoilTemperature/SoilTemperature_{date}.csv
+    soil_heat_flux_file = SoilHeatFlux/SoilHeatFlux_{date}.csv
     # columns to extract: what the columns are called in the input csv file to allow them to be extracted 
     # give the below in index order i.e. the first listed will be given index 1
     soil_moisture_headers = WP_kPa_1 WP_kPa_2 WP_kPa_3 
@@ -96,8 +97,9 @@ These settings are specific for the radiation data product::
     # double % to escape as it is a special character
     # date format as it is on the input files
     input_date_format = %%Y-%%m-%%d
-    # format of file
-    radiation_file = Radiation_{date}.csv
+    # location and format of file
+    # if file is found in directories under the main 'input file path directory', include that here
+    radiation_file = Radiation/Radiation_{date}.csv
     # columns to extract: what the columns are called in the input csv file to allow them to be extracted 
     # give the below in index order i.e. the first listed will be given index 1
     # longwave downwelling

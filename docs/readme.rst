@@ -64,6 +64,20 @@ If you would like to be able to edit the scripts, change the final line to
 
 Creating a virtual environment allows you to manage the installation requirements. You will need to activate the virtual environment before using the scripts (``source venv/bin/activate``) after opening a new terminal window.
 
+If running script 7 - plot_csv.py, you will need to install matplotlib.
+On Raspberry Pi, run 
+
+.. code-block:: console
+
+    $ sudo apt-get install python3-matplotlib
+
+Otherwise,
+
+.. code-block:: console
+
+    $ pip install matplotlib
+
+
 It is likely that you will use a Raspberry Pi to connect to the logger using a Moxa NPort either via TCP/IP or in Real COM mode. Therefore you will run the scripts on the Raspberry Pi.
 
   - If using Real COM mode the Real COM driver must be installed (see https://www.moxa.com/en/products/industrial-edge-connectivity/serial-device-servers/general-device-servers/nport-5100-series#resources) along with raspberrypi-kernel-headers (run ``sudo apt install raspberrypi-kernel-headers``)
@@ -106,6 +120,7 @@ Below, images of the logger set up with a Moxa Nport and the Raspberry Pi.
 .. image:: _static/raspberry_pi.jpg
     :width: 400
 
+
 Downloading Data
 ================
 
@@ -128,6 +143,17 @@ Or download all data from today:
     $ python download_data.py
 
 These commands will pull data from the tables you have specified from your logger and save it in csv files at the path you have provided. 
+
+Errors
+======
+
+Sometimes the scripts that retrieve data from the logger may raise an error such as:
+
+.. code-block:: console
+    
+    NoDeviceException
+
+If this occurs, please run the script again. The connection to the logger sometimes fails if there are too many queries sent.
 
 .. _Github repo: https://github.com/ncasuk/ncas-energy-balance-1-software
 .. _scripts: https://ncas-energy-balance-1-software.readthedocs.io/en/latest/scripts.html

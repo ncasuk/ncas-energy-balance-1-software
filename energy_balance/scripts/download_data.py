@@ -102,7 +102,7 @@ def get_todays_data(url, table, csv_path):
     # check if there is any data - if not, get since start of day (get data command is inclusive)
     # otherwise update command would just get all data
     # create a start time of midnight of todays date so update doesn't back-fill all data
-    today = datetime.datetime.utcnow().date()
+    today = datetime.utcnow().date()
     midnight = datetime.combine(today, datetime.min.time())
     start_time = midnight.strftime("%Y-%m-%d %H:%M")
 

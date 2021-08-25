@@ -30,10 +30,10 @@ def arg_parse():
     
     parser.add_argument('-f', '--frequency',
                         type=str,
-                        required=False,
+                        required=True,
                         default='monthly',
                         choices=['daily', 'monthly'],
-                        help="The frequency for creating the csv files, options are daily or monthly. The default is monthly.")
+                        help="The frequency for creating the csv files, options are daily or monthly.")
 
     parser.add_argument('-d', '--data-product',
                         type=str,
@@ -131,18 +131,24 @@ def main():
     else:
         date_format = "%Y-%m"
     
-    start_date = datetime.strptime(args.start_date, date_format)
+    try:
+        start_date = datetime.strptime(args.start_date, date_format)
+    except ValueError:
+        raise ValueError("Dates must be in a format matching the frequency: Y-m-d for daily, Y-m for monthly.")
 
     # if no end date, make it the same as the start date, then file will be created 
     if args.end_date:
         end_date = datetime.strptime(args.end_date, date_format)
+        complete_stmnt = f'Files created for {args.start_date} {args.end_date}'
     else:
         end_date = start_date
+        complete_stmnt = f'File created for {args.start_date}'
 
     data_product = args.data_product
     fpath = os.path.expanduser(CONFIG['common']['qc_csv_path'])
 
     create_files(start_date, end_date, freq, data_product, fpath)
+    print(complete_stmnt)
 
 if __name__ == '__main__':
     main()

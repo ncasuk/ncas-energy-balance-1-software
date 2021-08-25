@@ -46,9 +46,10 @@ def get_data(url, start_date, end_date, dir_path):
     # ['Status', 'Housekeeping', 'GPS_datetime', 'SoilTemperature', 'SoilMoisture', 'SoilHeatFlux', 'Radiation', 'DataTableInfo', 'Public']
     tables = CONFIG['common']['logger_tables']
 
-    for table in tables:
+    while start_date <= end_date:
 
-        while start_date <= end_date:
+        for table in tables:
+
             end_of_day = start_date + timedelta(hours=23, minutes=59, seconds=59, microseconds=59)
 
             csv_dirs = os.path.join(dir_path, table)
@@ -79,8 +80,11 @@ def get_data(url, start_date, end_date, dir_path):
                 latest = datetime.strptime(df['Datetime'].iloc[-1], "%Y-%m-%d %H:%M:%S") + timedelta(microseconds=1)
                 get_data_from_range(device, table, csv_path, latest, end_of_day, header=False)
 
-            start_date = start_date + timedelta(1)
-
+            print(f"Completed for {table} for {start_date.strftime('%Y-%m-%d')}")
+            time.sleep(3)
+        
+        start_date = start_date + timedelta(1)
+           
 
 def get_data_from_range(device, table, csv_path, start, end, header):
     """ 

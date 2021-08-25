@@ -7,6 +7,7 @@ __contact__ = 'eleanor.smith@stfc.ac.uk'
 import pandas as pd
 import argparse
 import matplotlib.pyplot as plt
+import os
 from datetime import datetime
 from energy_balance import CONFIG
 

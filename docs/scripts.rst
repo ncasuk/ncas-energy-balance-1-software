@@ -164,7 +164,7 @@ The mySQL script would run at 00:03, 00:08, 00:13 and every 5 minutes after.
 
 :: 
 
-    usage: create_files.py [-h] -s START_DATE [-e END_DATE] [-f {daily,monthly}]
+    usage: create_files.py [-h] -s START_DATE [-e END_DATE] -f {daily,monthly}
                         -d {soil,radiation}
 
     optional arguments:
@@ -179,7 +179,7 @@ The mySQL script would run at 00:03, 00:08, 00:13 and every 5 minutes after.
                             creating monthly files. This is inclusive.
     -f {daily,monthly}, --frequency {daily,monthly}
                             The frequency for creating the netCDF files, options
-                            are daily or monthly. The default is monthly.
+                            are daily or monthly.
     -d {soil,radiation}, --data-product {soil,radiation}
                             The data product to create files for.
 
@@ -267,7 +267,7 @@ In general, the usage is:
 :: 
 
 
-        usage: create_qc_csvs.py [-h] -s START_DATE [-e END_DATE] [-f {daily,monthly}]
+        usage: create_qc_csvs.py [-h] -s START_DATE [-e END_DATE] -f {daily,monthly}
                                 -d {soil,radiation}
 
         optional arguments:
@@ -282,7 +282,7 @@ In general, the usage is:
                                 creating monthly files. This is inclusive.
         -f {daily,monthly}, --frequency {daily,monthly}
                                 The frequency for creating the csv files, options
-                                are daily or monthly. The default is monthly.
+                                are daily or monthly.
         -d {soil,radiation}, --data-product {soil,radiation}
                                 The data product to create files for.
 
