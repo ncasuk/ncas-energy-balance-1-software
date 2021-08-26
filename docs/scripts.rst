@@ -224,7 +224,11 @@ A file would be created for each day, e.g. for 20th July 2021: ``ncas-energy-bal
         $ cd energy_balance/scripts
         $ python calculate_valid_min_max.py -v soil_temperature -qc qc_flag_soil_temperature -fp /path/to/ncas-energy-balance-1_lab_20210730_soil_v0.1.nc
 
-Once complete, you will see a message, e.g. ``Recalculated valid min and valid max for soil_temperature, using qc_flag_soil_temperature as a mask, with qc flag value of 1``
+Once complete, you will see a message, e.g. 
+
+.. code-block:: console
+    
+    Recalculated valid min and valid max for soil_temperature, using qc_flag_soil_temperature as a mask, with qc flag value of 1
 
 In general, the usage is:
 
