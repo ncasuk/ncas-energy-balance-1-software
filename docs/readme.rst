@@ -78,7 +78,7 @@ Otherwise,
     $ pip install matplotlib
 
 
-It is likely that you will use a Raspberry Pi to connect to the logger using a Moxa NPort either via TCP/IP or in Real COM mode. Therefore you will run the scripts on the Raspberry Pi.
+It is likely that you will use a Raspberry Pi to connect to the logger using a Moxa NPort in Real COM mode. Therefore you will run the scripts on the Raspberry Pi.
 
   - If using Real COM mode the Real COM driver must be installed (see https://www.moxa.com/en/products/industrial-edge-connectivity/serial-device-servers/general-device-servers/nport-5100-series#resources) along with raspberrypi-kernel-headers (run ``sudo apt install raspberrypi-kernel-headers``)
   - You will then need to map the target IP to the Real COM port - find the readme explaining how to do this at the path: ``/usr/lib/npreal2``.

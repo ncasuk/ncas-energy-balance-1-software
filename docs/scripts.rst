@@ -23,10 +23,9 @@ This is explained on the `config`_ page.
 
 .. note::
     To find your datalogger URL you must know:
-        - Whether are you connecting via tcp/ip or serial
-        - If tcp/ip, you need the ip and the port you are connecting to. (URL = 'tcp:host-ip:port')
-        - If serial, you need the path to the port and the baud rate of the port. (URL = 'serial:path:baudrate') 
+        - The path to the port and the baud rate of the port. (URL = 'serial:path:baudrate' e.g. 'serial:/dev/ttyUSB0:115200') 
         - For serial connections, You can also provide the byte size, parity and stop bits if required, this is assumed to be '8N1' if not provided. (e.g. 'serial:/dev/ttyUSB0:115200:8N1') 
+        - It may also be possible to connect via tcp (URL = 'tcp:host-ip:port'), however this is experimental and serial is recommended.
 
 Use the ``-h`` option on any script to see the command line arguments available.
   
