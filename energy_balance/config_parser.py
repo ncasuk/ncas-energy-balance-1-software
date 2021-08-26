@@ -31,7 +31,7 @@ def _gather_config_files(package=None):
 
     CONFIG = "CONFIG"
     if CONFIG in os.environ:
-        conf_files.extend(os.environ[CONFIG].split(":"))
+        conf_files.append(os.path.expanduser(os.environ[CONFIG]))
 
     return conf_files
 

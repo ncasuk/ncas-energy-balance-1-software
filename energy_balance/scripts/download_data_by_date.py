@@ -11,6 +11,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 from pycampbellcr1000 import CR1000
 from energy_balance import CONFIG
+import time
 
 
 def arg_parse():
@@ -82,9 +83,9 @@ def get_data(url, start_date, end_date, dir_path):
 
             print(f"Completed for {table} for {start_date.strftime('%Y-%m-%d')}")
             time.sleep(3)
-        
+
         start_date = start_date + timedelta(1)
-           
+
 
 def get_data_from_range(device, table, csv_path, start, end, header):
     """ 
