@@ -114,8 +114,10 @@ You will see a statement saying ``Data downloaded for ...`` once this is complet
 
 **3. add_to_mysql.py:**
 
-- This script will load the csv data for today's files, created by the ``download_data`` script, into MySQL tables, providing the tables have already been created in the database. For information on creating tables in MySQL, see https://dev.mysql.com/doc/refman/8.0/en/creating-tables.html 
-- These updating tables could then be used as a source for visualizing the data, for example with Grafana. This would mean the plots could be kept up to date and allow you to see the data in real time.
+- This script will load the csv data for today's files, created by the ``download_data`` script, into MySQL tables, providing the tables have already been created in the database. 
+- For information on setting up MySQL on a Raspberry Pi, see https://pimylifeup.com/raspberry-pi-mysql/
+- For information on creating tables in MySQL, see https://dev.mysql.com/doc/refman/8.0/en/creating-tables.html 
+- These updating tables could then be used as a source for visualizing the data, for example with `Grafana`_. This would mean the plots could be kept up to date and allow you to see the data in real time.
 - This could be set up as cron job along with the ``download_data`` script, to keep the tables up to date. See explanation below.
 - Edit ``logger_tables`` and ``mysql_tables`` in the config file to change the table names to those of your table names from the logger and the corresponding tables you have created in MySQL. 
 - The default values used for the MySQL tables are housekeeping, gps, soil_temp, soil_moisture, soil_heat_flux and radiation. The defaults used for the logger tables are Housekeeping, GPS_datetime, SoilTemperature, SoilMoisture, SoilHeatFlux and Radiation.
@@ -366,3 +368,4 @@ The command for this was:
 .. _api: https://ncas-energy-balance-1-software.readthedocs.io/en/latest/api.html#scripts
 .. _config: https://ncas-energy-balance-1-software.readthedocs.io/en/latest/config.html
 .. _qc: https://ncas-energy-balance-1-software.readthedocs.io/en/latest/quality_control.html
+.. _Grafana: https://ncas-energy-balance-1-software.readthedocs.io/en/latest/grafana.html
