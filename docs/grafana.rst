@@ -6,7 +6,7 @@ Grafana can be used to visualize data and can be used in conjunction with the do
 
 The MySQL database that you create when using the add_to_mysql.py script can be set up as a data source for Grafana. 
 
-With the data download and add to MySQL scripts running in 5 minute intervals with cron jobs, the data will be kept up to date.
+With the data download and add to MySQL scripts running in 5 minute intervals with cron jobs, as discussed on the `scripts`_ page, the data will be kept up to date.
 
 For an example, see the image below:
 
@@ -39,4 +39,4 @@ Create a plot
 .. image:: _static/create_plot_grafana.png
   :width: 800
 
-- There are options to change the name of the plot and colours, axis names etc. on the right hand side.
+- There are options to change the name of the plot, line colours, axis names etc. on the right hand side.
