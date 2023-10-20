@@ -68,9 +68,10 @@ class RadiationQualityControl(QualityControl):
         self.apply_qc(swup_conditions, swup_choices, self.swup_header)
 
         # body temperature
-        body_temp_conditions = [np.isnan(self._df[self.body_temp_header]), self._df[self.body_temp_header] < -233.15, self._df[self.body_temp_header] > 353.15]
-        body_temp_choices = [2, 2, 2]
-        self.apply_qc(lwdn_conditions, lwdn_choices, self.body_temp_header)
+	if self.body_temp_header is not 'null':
+        	body_temp_conditions = [np.isnan(self._df[self.body_temp_header]), self._df[self.body_temp_header] < -233.15, self._df[self.body_temp_header] > 353.15]
+        	body_temp_choices = [2, 2, 2]
+        	self.apply_qc(lwdn_conditions, lwdn_choices, self.body_temp_header)
 
         # sensor cleaning
         # create using datetime column
@@ -94,9 +95,10 @@ class RadiationQualityControl(QualityControl):
             self._df_masked[col] = self._df_masked[col][mask_column]
 
         # apply temp mask to all variables
-        for col in self.headers:
-            mask_column = self.mask[self.body_temp_header+'_qc']
-            self._df_masked[col] = self._df_masked[col][mask_column]
+	if self.body_temp_header is not 'null':
+        	for col in self.headers:
+            		mask_column = self.mask[self.body_temp_header+'_qc']
+            		self._df_masked[col] = self._df_masked[col][mask_column]
 
     def create_masked_df(self, qc_flag):
         """

@@ -69,7 +69,8 @@ class RadiationNetCDF(BaseNetCDF):
                       "long_name": "Radiometer Body Temperature",
                       "cell_methods": "time:mean",
                       "coordinates": "latitude longitude",}
-        self.create_variable("radiometer_body_temperature", np.float32, ("time",), self.body_temp_header, **temp_attrs)
+	if self.body_temp_header is not 'null':
+        	self.create_variable("radiometer_body_temperature", np.float32, ("time",), self.body_temp_header, **temp_attrs)
 
         # create qc variables
         # swdn
@@ -97,10 +98,11 @@ class RadiationNetCDF(BaseNetCDF):
         self.create_qc_variable("qc_flag_upwelling_longwave", self.lwup_header, ('time',), **attrs)
 
         # body temp
-        attrs = {"long_name": "Data Quality flag: Body Temperature",
-                 "flag_values": "0b,1b,2b,3b,4b",
-                 "flag_meanings": "0: not_used \n1: good data \n2: bad_data_body_temperature_outside_operational_range_-40_to_80C \n3: suspect_data \n4: timestamp_error"}
-        self.create_qc_variable("qc_flag_body_temperature", self.body_temp_header, ('time',), **attrs)
+	if self.body_temp_header is not 'null':
+        	attrs = {"long_name": "Data Quality flag: Body Temperature",
+                	 "flag_values": "0b,1b,2b,3b,4b",
+                 	"flag_meanings": "0: not_used \n1: good data \n2: bad_data_body_temperature_outside_operational_range_-40_to_80C \n3: suspect_data \n4: timestamp_error"}
+        	self.create_qc_variable("qc_flag_body_temperature", self.body_temp_header, ('time',), **attrs)
 
         # cleaning
         attrs = {"long_name": "Data Quality flag: sensor cleaning",
