@@ -19,7 +19,11 @@ class RadiationQualityControl(QualityControl):
     swup_header = CONFIG['radiation']['swup_header']
     body_temp_header = CONFIG['radiation']['body_temp_header']
 
-    headers = [lwdn_header, lwup_header, swdn_header, swup_header, body_temp_header]
+    def __init__(self, date, frequency):
+        self.headers = [self.lwdn_header, self.lwup_header, self.swdn_header, self.swup_header]
+        if not self.body_temp_header == 'null':
+            self.headers.append(self.body_temp_header)
+        super().__init__(date, frequency)
 
     def create_dataframes(self):
         """
@@ -31,10 +35,11 @@ class RadiationQualityControl(QualityControl):
         
         radiation_file = CONFIG['radiation']['radiation_file']
 
+        full_input_glob = os.path.expanduser(os.path.join(input_file_path, radiation_file.format(date=date)))
         try:
-            df_radiation = pd.concat([pd.read_csv(f) for f in glob.glob(os.path.expanduser(os.path.join(input_file_path, radiation_file.format(date=date))))],ignore_index=True)
+            df_radiation = pd.concat([pd.read_csv(f) for f in glob.glob(full_input_glob)],ignore_index=True)
         except ValueError:
-            print(f"No files found for {date}, skipping")
+            print(f"No files found for {date} in {full_input_glob}, skipping")
             raise FileNotFoundError
 
         # all data needed is selected using column headers
@@ -68,10 +73,10 @@ class RadiationQualityControl(QualityControl):
         self.apply_qc(swup_conditions, swup_choices, self.swup_header)
 
         # body temperature
-	if self.body_temp_header is not 'null':
-        	body_temp_conditions = [np.isnan(self._df[self.body_temp_header]), self._df[self.body_temp_header] < -233.15, self._df[self.body_temp_header] > 353.15]
-        	body_temp_choices = [2, 2, 2]
-        	self.apply_qc(lwdn_conditions, lwdn_choices, self.body_temp_header)
+        if not self.body_temp_header == 'null':
+            body_temp_conditions = [np.isnan(self._df[self.body_temp_header]), self._df[self.body_temp_header] < -233.15, self._df[self.body_temp_header] > 353.15]
+            body_temp_choices = [2, 2, 2]
+            self.apply_qc(lwdn_conditions, lwdn_choices, self.body_temp_header)
 
         # sensor cleaning
         # create using datetime column
@@ -95,10 +100,10 @@ class RadiationQualityControl(QualityControl):
             self._df_masked[col] = self._df_masked[col][mask_column]
 
         # apply temp mask to all variables
-	if self.body_temp_header is not 'null':
-        	for col in self.headers:
-            		mask_column = self.mask[self.body_temp_header+'_qc']
-            		self._df_masked[col] = self._df_masked[col][mask_column]
+        if not self.body_temp_header == 'null':
+            for col in self.headers:
+                mask_column = self.mask[self.body_temp_header+'_qc']
+                self._df_masked[col] = self._df_masked[col][mask_column]
 
     def create_masked_df(self, qc_flag):
         """

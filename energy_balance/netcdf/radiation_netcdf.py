@@ -14,9 +14,14 @@ class RadiationNetCDF(BaseNetCDF):
     swdn_header = CONFIG['radiation']['swdn_header']
     swup_header = CONFIG['radiation']['swup_header']
     body_temp_header = CONFIG['radiation']['body_temp_header']
-    headers = [lwdn_header, lwup_header, swdn_header, swup_header, body_temp_header]
 
     data_product = 'radiation'
+
+    def __init__(self, df, qc, date, frequency):
+        self.headers = [self.lwdn_header, self.lwup_header, self.swdn_header, self.swup_header]
+        if not self.body_temp_header == 'null':
+            self.headers.append(self.body_temp_header)
+        super().__init__(df, qc, date, frequency)
 
     def create_specific_dimensions(self):
         """
@@ -69,7 +74,7 @@ class RadiationNetCDF(BaseNetCDF):
                       "long_name": "Radiometer Body Temperature",
                       "cell_methods": "time:mean",
                       "coordinates": "latitude longitude",}
-	if self.body_temp_header is not 'null':
+        if not self.body_temp_header == 'null':
         	self.create_variable("radiometer_body_temperature", np.float32, ("time",), self.body_temp_header, **temp_attrs)
 
         # create qc variables
@@ -98,7 +103,7 @@ class RadiationNetCDF(BaseNetCDF):
         self.create_qc_variable("qc_flag_upwelling_longwave", self.lwup_header, ('time',), **attrs)
 
         # body temp
-	if self.body_temp_header is not 'null':
+        if not self.body_temp_header == 'null':
         	attrs = {"long_name": "Data Quality flag: Body Temperature",
                 	 "flag_values": "0b,1b,2b,3b,4b",
                  	"flag_meanings": "0: not_used \n1: good data \n2: bad_data_body_temperature_outside_operational_range_-40_to_80C \n3: suspect_data \n4: timestamp_error"}
